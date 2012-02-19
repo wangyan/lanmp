@@ -1,0 +1,80 @@
+#! /bin/bash
+#
+# nginx      Start up the nginx server daemon
+#
+# chkconfig: 2345 55 25
+# Description: starts and stops the nginx web server
+#
+### BEGIN INIT INFO
+# Provides:          nginx
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       starts and stops the nginx web server
+### END INIT INFO
+
+# Author: WangYan <webmaster@wangyan.org>
+# Version:1.0 (2011.19.15)
+
+# To install:
+#   copy this file to /etc/init.d/nginx
+#   shell> chkconfig --add nginx (RedHat)
+#   shell> update-rc.d -f nginx defaults (debian)
+
+# To uninstall:
+#   shell> chkconfig --del nginx (RedHat)
+#   shell> update-rc.d -f nginx remove
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+NAME=nginx
+DAEMON=/usr/local/nginx/sbin/$NAME
+CONFIGFILE=/usr/local/nginx/conf/$NAME.conf
+PIDFILE=/var/run/$NAME.pid
+ULIMIT=10240
+
+set -e
+[ -x "$DAEMON" ] || exit 0
+
+do_start() {
+    echo "Starting $NAME ..."
+    ulimit -SHn $ULIMIT
+    $DAEMON -c $CONFIGFILE
+}
+
+do_stop() {
+    echo "Shutting down $NAME ..."
+    kill `cat $PIDFILE`
+}
+
+do_reload() {
+    echo "Reloading $NAME ..."
+    kill -HUP `cat $PIDFILE`
+}
+
+case "$1" in
+    start)
+        [ ! -f "$PIDFILE" ] && do_start || echo "nginx already running"
+	echo -e ".\ndone"
+        ;;
+    stop)
+        [ -f "$PIDFILE" ] && do_stop || echo "nginx not running"
+	echo -e ".\ndone"
+        ;;
+    restart)
+        [ -f "$PIDFILE" ] && do_stop || echo "nginx not running"
+        do_start
+	echo -e ".\ndone"
+        ;;
+    reload)
+        [ -f "$PIDFILE" ] && do_reload || echo "nginx not running"
+	echo -e ".\ndone"
+        ;;
+    *)
+    N=/etc/init.d/$NAME
+    echo "Usage: $N {start|stop|restart|reload}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
