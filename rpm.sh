@@ -7,9 +7,9 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.02.20"
+echo "# Last modified: 2012.02.27"
 echo "#"
-echo "# Copyright (c) 2011, WangYan <WangYan@188.com>"
+echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
 echo "# Distributed under the GNU General Public License, version 3.0."
 echo "#"
@@ -280,6 +280,9 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 
 	echo "---------- Apache config ----------"
 
+	cd /usr/local/apache/bin/
+	for i in *; do ln -s /usr/local/apache/bin/$i /usr/bin/$i; done
+
 	groupadd www
 	useradd -g www -M -s /bin/false www
 
@@ -288,15 +291,13 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 	chkconfig httpd on
 
 	mv /usr/local/apache/conf/httpd.conf /usr/local/apache/conf/httpd.conf.bak
-	mv /usr/local/apache/conf/extra /usr/local/apache/conf/extra.bak
-
-	cd /usr/local/apache/bin/
-	for i in *; do ln -s /usr/local/apache/bin/$i /usr/bin/$i; done
-
 	cp $LANMP_PATH/conf/httpd.conf /usr/local/apache/conf/httpd.conf
 	chmod 644 /usr/local/apache/conf/httpd.conf
 
-	\cp $LANMP_PATH/conf/httpd-mpm.conf /usr/local/apache/conf/extra
+	mv /usr/local/apache/conf/extra/httpd-mpm.conf /usr/local/apache/conf/extra/httpd-mpm.conf.bak
+	cp $LANMP_PATH/conf/httpd-mpm.conf /usr/local/apache/conf/extra/httpd-mpm.conf
+	chmod 644 /usr/local/apache/conf/extra/httpd-mpm.conf
+
 	mkdir /usr/local/apache/conf/vhosts
 	mkdir -p $WEBROOT
 	cp $LANMP_PATH/conf/p.php $WEBROOT
