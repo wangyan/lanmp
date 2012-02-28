@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.02.27"
+echo "# Last modified: 2012.02.28"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -265,8 +265,10 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 	cd $LANMP_PATH
 
 	if [ ! -s httpd-*.tar.gz ]; then
-		LATEST_APACHE_LINK=`elinks http://www.apache.org/dist/httpd/ | awk '/http.+[0-9]\.tar\.gz$/{print $2}' | tail -1`
-		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp/httpd-latest.tar.gz"
+#		LATEST_APACHE_LINK=`elinks http://www.apache.org/dist/httpd/ | awk '/http.+[0-9]\.tar\.gz$/{print $2}' | tail -1`
+#		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp/httpd-latest.tar.gz"
+		LATEST_APACHE_LINK="http://www.apache.org/dist/httpd/httpd-2.2.22.tar.gz"
+		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp/httpd-2.2.22.tar.gz"
 		Extract ${LATEST_APACHE_LINK} ${BACKUP_APACHE_LINK}
 	else
 		tar -zxf httpd-*.tar.gz
