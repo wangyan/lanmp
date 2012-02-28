@@ -237,11 +237,9 @@ cmake . \
 -DENABLED_LOCAL_INFILE=1
 make install
 
+cp $LANMP_PATH/conf/my.cnf /etc/my.cnf
+
 cd /usr/local/mysql
-
-cp support-files/my-medium.cnf /etc/my.cnf
-sed -i 's/skip-locking/skip-external-locking/g' /etc/my.cnf
-
 scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql
 chown -R root:root /usr/local/mysql/.
 chown -R mysql /usr/local/mysql/data
