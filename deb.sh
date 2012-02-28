@@ -289,7 +289,7 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 	chmod 755 /etc/init.d/httpd
 	update-rc.d -f httpd defaults
 
-	mv /usr/local/apache/conf/httpd.conf /usr/local/apache/conf/httpd.conf.bak
+	mv /usr/local/apache/conf/httpd.conf /usr/local/apache/conf/httpd.conf.old
 	cp $LANMP_PATH/conf/httpd.conf /usr/local/apache/conf/httpd.conf
 	chmod 644 /usr/local/apache/conf/httpd.conf
 
