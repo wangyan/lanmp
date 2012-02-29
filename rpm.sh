@@ -849,6 +849,7 @@ if [ "$SOFTWARE" != "2" ]; then
 	--with-mail_ssl_module \
 	--with-pcre \
 	--with-debug \
+	--with-ipv6 \
 	--http-client-body-temp-path=/var/tmp/nginx/client \
 	--http-proxy-temp-path=/var/tmp/nginx/proxy \
 	--http-fastcgi-temp-path=/var/tmp/nginx/fastcgi \
