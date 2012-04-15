@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.02.28"
+echo "# Last modified: 2012.04.16"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -78,10 +78,10 @@ echo "You choose = $SOFTWARE"
 echo "---------------------------"
 echo ""
 
-echo "Please choose the version of PHP: (2:php-5.2.x,3:php-5.3.x) (1/2)"
-read -p "(Default version: 3):" PHP_VER
+echo "Please choose the version of PHP: (1:php-5.2.x,2:php-5.4.x) (1/2)"
+read -p "(Default version: 2):" PHP_VER
 if [ -z $PHP_VER ]; then
-	PHP_VER="3"
+	PHP_VER="2"
 fi
 echo "---------------------------"
 echo "PHP Version = $PHP_VER"
@@ -472,7 +472,7 @@ cd $LANMP_PATH
 groupadd www-data
 useradd -g www-data -M -s /bin/false www-data
 
-if [ "$PHP_VER" = "2" ]; then
+if [ "$PHP_VER" = "1" ]; then
 	if [ ! -s php-5.2.*.tar.gz ]; then
 		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.2.17.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-5.2.17.tar.gz"
@@ -482,13 +482,13 @@ if [ "$PHP_VER" = "2" ]; then
 		cd php-5.2.*/
 	fi
 else
-	if [ ! -s php-5.3.*.tar.gz ]; then
-		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.3.10.tar.gz"
+	if [ ! -s php-5.4.*.tar.gz ]; then
+		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.4.0.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
-		tar -zxf php-5.3.*.tar.gz
-		cd php-5.3.*/
+		tar -zxf php-5.4.*.tar.gz
+		cd php-5.4.*/
 	fi
 fi
 
@@ -608,7 +608,7 @@ for i in *; do ln -s /usr/local/php/bin/$i /usr/bin/$i; done
 
 cd $LANMP_PATH/php-*/
 
-if [ "$PHP_VER" = "2" ];then
+if [ "$PHP_VER" = "1" ];then
 	cp php.ini-recommended /usr/local/php/lib/php.ini
 	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 else
@@ -660,7 +660,7 @@ if [ "$INSTALL_EA" = "y" ];then
 	mkdir /tmp/eaccelerator
 	chmod 777 /tmp/eaccelerator
 
-	if [ "$PHP_VER" = "2" ]; then
+	if [ "$PHP_VER" = "1" ]; then
 		cat >>/usr/local/php/lib/php.ini<<-EOF
 		[eaccelerator]
 		zend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/eaccelerator.so"
@@ -718,7 +718,7 @@ if [ "$INSTALL_IONCUBE" = "y" ];then
 	fi
 
 	mkdir -p /usr/local/zend/
-	if [ "$PHP_VER" = "2" ]; then
+	if [ "$PHP_VER" = "1" ]; then
 		cp ioncube_loader_lin_5.2.so /usr/local/zend/
 		cat >>/usr/local/php/lib/php.ini<<-EOF
 		[Zend]
@@ -739,7 +739,7 @@ cd $LANMP_PATH
 
 if [ "$INSTALL_ZEND" = "y" ];then
 
-	if [ "$PHP_VER" = "2" ]; then
+	if [ "$PHP_VER" = "1" ]; then
 		if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
 			if [ ! -s ZendOptimizer-*-linux-glibc23-x86_64.tar.gz ]; then
 				LATEST_ZEND_LINK="http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz"
