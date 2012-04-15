@@ -918,7 +918,11 @@ cp $LANMP_PATH/conf/control_user.sql /tmp/control_user.sql
 sed -i 's/PMAPWD/'$PMAPWD'/g' /tmp/control_user.sql
 /usr/local/mysql/bin/mysql -u root -p$MYSQL_ROOT_PWD -h 127.0.0.1 < /tmp/control_user.sql
 
-cp $WEBROOT/phpmyadmin/scripts/create_tables.sql /tmp/create_tables.sql
+if [ -s $WEBROOT/phpmyadmin/scripts/create_tables.sql ]; then
+	cp $WEBROOT/phpmyadmin/scripts/create_tables.sql /tmp/create_tables.sql
+else
+	cp $WEBROOT/phpmyadmin/examples/create_tables.sql /tmp/create_tables.sql
+fi
 
 cat >>update_mysql.sh<<EOF
 create database phpmyadmin;
