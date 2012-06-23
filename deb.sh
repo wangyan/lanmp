@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.04.16"
+echo "# Last modified: 2012.06.23"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -78,7 +78,7 @@ echo "You choose = $SOFTWARE"
 echo "---------------------------"
 echo ""
 
-echo "Please choose the version of PHP: (1:php-5.2.x,2:php-5.3.x) (1/2)"
+echo "Please choose the version of PHP: (1:php-5.2.x,2:php-5.4.x) (1/2)"
 read -p "(Default version: 2):" PHP_VER
 if [ -z $PHP_VER ]; then
 	PHP_VER="2"
@@ -482,7 +482,7 @@ if [ "$PHP_VER" = "1" ]; then
 	fi
 else
 	if [ ! -s php-5.4.*.tar.gz ]; then
-		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.4.0.tar.gz"
+		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.4.4.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
