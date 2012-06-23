@@ -298,8 +298,21 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 	chmod 644 /usr/local/apache/conf/extra/httpd-mpm.conf
 
 	mkdir /usr/local/apache/conf/vhosts
+	chmod 711 /usr/local/apache/conf/vhosts
 	mkdir -p $WEBROOT
 	cp $LANMP_PATH/conf/p.php $WEBROOT
+
+	echo "---------- Apache SSL ----------"
+
+	mkdir /usr/local/apache/conf/ssl
+	chmod 711 /usr/local/apache/conf/ssl
+	cp $LANMP_PATH/conf/server* /usr/local/apache/conf/ssl
+	chmod 644 /usr/local/apache/conf/ssl/*
+
+	mv /usr/local/apache/conf/extra/httpd-ssl.conf /usr/local/apache/conf/extra/httpd-ssl.conf.bak
+	cp $LANMP_PATH/conf/httpd-ssl.conf /usr/local/apache/conf/extra/httpd-ssl.conf
+	chmod 644 /usr/local/apache/conf/extra/httpd-ssl.conf
+	sed -i 's,WEBROOT,'$WEBROOT',g' /usr/local/apache/conf/extra/httpd-ssl.conf
 
 	echo "---------- Apache frontend ----------"
 
