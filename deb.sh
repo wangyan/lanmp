@@ -863,7 +863,7 @@ if [ "$SOFTWARE" != "2" ]; then
 
 	mkdir /usr/local/nginx/conf/ssl
 	chmod 711 /usr/local/nginx/conf/ssl
-	cp $LANMP_PATH/conf/ssl* /usr/local/nginx/conf/ssl/
+	cp $LANMP_PATH/conf/server* /usr/local/nginx/conf/ssl/
 	chmod 644 /usr/local/nginx/conf/ssl/*
 
 	mkdir /usr/local/nginx/conf/vhosts
