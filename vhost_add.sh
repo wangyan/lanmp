@@ -316,7 +316,7 @@ if [ "$SOFTWARE" != "1" ]; then
 			ErrorLog "logs/$DOMAIN/error.log"
 			CustomLog "logs/$DOMAIN/access.log" combinedio
 			<Directory "/home/$VHOST_ACCOUNT/public_html">
-				Options +Includes -Indexes
+				Options +Includes +Indexes
 				php_admin_flag engine ON
 				php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html:/tmp:/proc"
 			</Directory>
@@ -334,7 +334,7 @@ if [ "$SOFTWARE" != "1" ]; then
 				ErrorLog "logs/$DOMAIN/error.log"
 				CustomLog "logs/$DOMAIN/access.log" combinedio
 				<Directory "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN">
-					Options +Includes -Indexes
+					Options +Includes +Indexes
 					php_admin_flag engine ON
 					php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN:/tmp:/proc"
 				</Directory>

@@ -310,14 +310,14 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 		cat >/usr/local/apache/conf/extra/httpd-vhosts.conf<<-EOF
 		NameVirtualHost *:80
 
-		<VirtualHost *:80>
+		<VirtualHost _default_:80>
 			ServerAdmin webmaster@example.com
 			DocumentRoot "$WEBROOT"
 			ServerName localhost
 			ErrorLog "logs/error_log"
 			CustomLog "logs/access_log" combinedio
 			<Directory "$WEBROOT">
-			    Options +Includes -Indexes
+			    Options +Includes +Indexes
 			    php_admin_flag engine ON
 			    php_admin_value open_basedir "$WEBROOT:/tmp:/proc"
 			</Directory>
@@ -358,7 +358,7 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 			ErrorLog "logs/error_log"
 			CustomLog "logs/access_log" combinedio
 			<Directory "$WEBROOT">
-				Options +Includes -Indexes
+				Options +Includes +Indexes
 				php_admin_flag engine ON
 				php_admin_value open_basedir "$WEBROOT:/tmp:/proc"
 			</Directory>
