@@ -321,6 +321,7 @@ if [ "$SOFTWARE" != "1" ]; then
 				php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html:/tmp:/proc"
 			</Directory>
 		</VirtualHost>
+
 		<VirtualHost *:443>
 			ServerAdmin webmaster@$DOMAIN
 			DocumentRoot "/home/$VHOST_ACCOUNT/public_html"
@@ -356,6 +357,7 @@ if [ "$SOFTWARE" != "1" ]; then
 					php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN:/tmp:/proc"
 				</Directory>
 			</VirtualHost>
+
 			<VirtualHost *:443>
 				ServerAdmin webmaster@$DOMAIN
 				DocumentRoot "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN"

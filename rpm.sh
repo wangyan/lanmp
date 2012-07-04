@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.06.23"
+echo "# Last modified: 2012.07.04"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -314,6 +314,10 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 	cp $LANMP_PATH/conf/httpd-ssl.conf /usr/local/apache/conf/extra/httpd-ssl.conf
 	chmod 644 /usr/local/apache/conf/extra/httpd-ssl.conf
 	sed -i 's,WEBROOT,'$WEBROOT',g' /usr/local/apache/conf/extra/httpd-ssl.conf
+
+	if [ "$SOFTWARE" = "2" ]; then
+		sed -i 's,#Include conf/extra/httpd-s,Include conf/extra/httpd-s,g' /usr/local/apache/conf/httpd.conf
+	fi
 
 	echo "---------- Apache frontend ----------"
 
