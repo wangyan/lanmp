@@ -322,24 +322,28 @@ if [ "$SOFTWARE" != "1" ]; then
 			</Directory>
 		</VirtualHost>
 
-		<VirtualHost *:443>
-			ServerAdmin webmaster@$DOMAIN
-			DocumentRoot "/home/$VHOST_ACCOUNT/public_html"
-			ServerName $DOMAIN
-			ServerAlias www.$DOMAIN
-			ErrorLog "logs/$DOMAIN/error.log"
-			CustomLog "logs/$DOMAIN/access.log" combinedio
-			SSLEngine on
-			SSLCertificateFile "/usr/local/apache/conf/ssl/server.crt"
-			SSLCertificateKeyFile "/usr/local/apache/conf/ssl/server.key"
-			#SSLCACertificateFile "/usr/local/apache/conf/ssl/ca.crt"
-			<Directory "/home/$VHOST_ACCOUNT/public_html">
-				Options +Includes +Indexes
-				php_admin_flag engine ON
-				php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html:/tmp:/proc"
-			</Directory>
-		</VirtualHost>
 		EOF
+		if [ "$SOFTWARE" = "2" ]; then
+			cat >>/usr/local/apache/conf/vhosts/$DOMAIN.conf<<-EOF
+			<VirtualHost *:443>
+				ServerAdmin webmaster@$DOMAIN
+				DocumentRoot "/home/$VHOST_ACCOUNT/public_html"
+				ServerName $DOMAIN
+				ServerAlias www.$DOMAIN
+				ErrorLog "logs/$DOMAIN/error.log"
+				CustomLog "logs/$DOMAIN/access.log" combinedio
+				SSLEngine on
+				SSLCertificateFile "/usr/local/apache/conf/ssl/server.crt"
+				SSLCertificateKeyFile "/usr/local/apache/conf/ssl/server.key"
+				#SSLCACertificateFile "/usr/local/apache/conf/ssl/ca.crt"
+				<Directory "/home/$VHOST_ACCOUNT/public_html">
+					Options +Includes +Indexes
+					php_admin_flag engine ON
+					php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html:/tmp:/proc"
+				</Directory>
+			</VirtualHost>
+			EOF
+		fi
 	fi
 
 	if [ "$ADD_SUBDOMAIN" = 'y' ]; then
@@ -358,23 +362,28 @@ if [ "$SOFTWARE" != "1" ]; then
 				</Directory>
 			</VirtualHost>
 
-			<VirtualHost *:443>
-				ServerAdmin webmaster@$DOMAIN
-				DocumentRoot "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN"
-				ServerName $SUBDOMAIN.$DOMAIN
-				ErrorLog "logs/$DOMAIN/error.log"
-				CustomLog "logs/$DOMAIN/access.log" combinedio
-				SSLEngine on
-				SSLCertificateFile "/usr/local/apache/conf/ssl/server.crt"
-				SSLCertificateKeyFile "/usr/local/apache/conf/ssl/server.key"
-				#SSLCACertificateFile "/usr/local/apache/conf/ssl/ca.crt"
-				<Directory "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN">
-					Options +Includes +Indexes
-					php_admin_flag engine ON
-					php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN:/tmp:/proc"
-				</Directory>
-			</VirtualHost>
 			EOF
+			if [ "$SOFTWARE" = "2" ]; then
+				cat >>/usr/local/apache/conf/vhosts/${SUBDOMAIN}.${DOMAIN}.conf<<-EOF
+				<VirtualHost *:443>
+					ServerAdmin webmaster@$DOMAIN
+					DocumentRoot "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN"
+					ServerName $SUBDOMAIN.$DOMAIN
+					ErrorLog "logs/$DOMAIN/error.log"
+					CustomLog "logs/$DOMAIN/access.log" combinedio
+					SSLEngine on
+					SSLCertificateFile "/usr/local/apache/conf/ssl/server.crt"
+					SSLCertificateKeyFile "/usr/local/apache/conf/ssl/server.key"
+					#SSLCACertificateFile "/usr/local/apache/conf/ssl/ca.crt"
+					<Directory "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN">
+						Options +Includes +Indexes
+						php_admin_flag engine ON
+						php_admin_value open_basedir "/home/$VHOST_ACCOUNT/public_html/$SUBDOMAIN:/tmp:/proc"
+					</Directory>
+				</VirtualHost>
+				EOF
+			fi
+
 		fi
 	fi
 
