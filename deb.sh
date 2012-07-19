@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.07.04"
+echo "# Last modified: 2012.07.19"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -274,7 +274,15 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 		tar -zxf httpd-*.tar.gz
 		cd httpd-*/
 	fi
-	./configure  --prefix=/usr/local/apache --enable-mods-shared=most --enable-ssl=shared --with-mpm=prefork
+
+	cd srclib/apr
+	./configure && make && make install
+
+	cd ../apr-util
+	./configure && make && make install
+	ldconfig
+
+	./configure  --prefix=/usr/local/apache --enable-mods-shared=most --enable-ssl=shared --with-mpm=prefork --with-apr=/usr/local/apr
 	make && make install
 
 	echo "---------- Apache config ----------"
@@ -746,13 +754,13 @@ if [ "$INSTALL_IONCUBE" = "y" ];then
 	if [ "$PHP_VER" = "1" ]; then
 		cp ioncube_loader_lin_5.2.so /usr/local/zend/
 		cat >>/usr/local/php/lib/php.ini<<-EOF
-		[Zend]
+		[Zend Optimizer]
 		zend_extension = /usr/local/zend/ioncube_loader_lin_5.2.so
 		EOF
 	else
 		cp ioncube_loader_lin_5.4.so /usr/local/zend/
 		cat >>/usr/local/php/lib/php.ini<<-EOF
-		[Zend]
+		[Zend Optimizer]
 		zend_extension = /usr/local/zend/ioncube_loader_lin_5.4.so
 		EOF
 	fi
@@ -811,6 +819,8 @@ if [ "$INSTALL_ZEND" = "y" ];then
 	fi
 
 	cat >>/usr/local/php/lib/php.ini<<-EOF
+
+	[Zend]
 	zend_extension = /usr/local/zend/ZendGuardLoader.so
 	zend_loader.enable = 1
 	EOF
