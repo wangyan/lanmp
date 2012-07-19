@@ -588,6 +588,12 @@ fi
 make ZEND_EXTRA_LIBS='-liconv'
 make install
 
+echo "---------- PDO MYSQL Extension ----------"
+
+/usr/local/php/bin/phpize
+./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
+make && make install
+
 echo "---------- Memcache Extension ----------"
 
 cd $LANMP_PATH
@@ -602,20 +608,6 @@ else
 fi
 /usr/local/php/bin/phpize
 ./configure --with-php-config=/usr/local/php/bin/php-config --with-zlib-dir --enable-memcache
-make && make install
-
-echo "---------- PDO MYSQL Extension ----------"
-
-cd $LANMP_PATH
-
-if [ ! -s PDO_MYSQL-*.tgz ]; then
-	wget -c http://pecl.php.net/get/PDO_MYSQL-1.0.2.tgz
-fi
-tar -zxf PDO_MYSQL-*.tgz
-cd PDO_MYSQL-*/
-
-/usr/local/php/bin/phpize
-./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
 make && make install
 
 echo "---------- PHP Config ----------"
