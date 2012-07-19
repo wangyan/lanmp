@@ -750,10 +750,10 @@ if [ "$INSTALL_IONCUBE" = "y" ];then
 		zend_extension = /usr/local/zend/ioncube_loader_lin_5.2.so
 		EOF
 	else
-		cp ioncube_loader_lin_5.3.so /usr/local/zend/
+		cp ioncube_loader_lin_5.4.so /usr/local/zend/
 		cat >>/usr/local/php/lib/php.ini<<-EOF
 		[Zend]
-		zend_extension = /usr/local/zend/ioncube_loader_lin_5.3.so
+		zend_extension = /usr/local/zend/ioncube_loader_lin_5.4.so
 		EOF
 	fi
 fi
