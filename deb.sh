@@ -88,13 +88,13 @@ echo "PHP Version = $PHP_VER"
 echo "---------------------------"
 echo ""
 
-echo "Do you want to install eAccelerator ? (y/n)"
-read -p "(Default: y):" INSTALL_EA
-if [ -z $INSTALL_EA ]; then
-	INSTALL_EA="y"
+echo "Do you want to install xcache ? (y/n)"
+read -p "(Default: y):" INSTALL_XC
+if [ -z $INSTALL_XC ]; then
+	INSTALL_XC="y"
 fi
 echo "---------------------------"
-echo "You choose = $INSTALL_EA"
+echo "You choose = $INSTALL_XC"
 echo "---------------------------"
 echo ""
 
@@ -646,57 +646,74 @@ else
 	/etc/init.d/php-fpm start
 fi
 
-echo "---------- Eaccelerator Extension ----------"
+echo "---------- Xcache Extension ----------"
 
-if [ "$INSTALL_EA" = "y" ];then
+if [ "$INSTALL_XC" = "y" ];then
 
 	cd $LANMP_PATH
 
-	if [ ! -s eaccelerator-*.tar.bz2 ]; then
-		#LATEST_EACCELERATOR_LINK="http://bart.eaccelerator.net/source/0.9.6.1/eaccelerator-0.9.6.1.tar.bz2"
-		LATEST_EACCELERATOR_LINK="http://small-script.googlecode.com/files/eaccelerator-0.9.6.1.tar.bz2"
-		BACKUP_EACCELERATOR_LINK="http://wangyan.org/download/lanmp/eaccelerator-latest.tar.bz2"
-		Extract ${LATEST_EACCELERATOR_LINK} ${BACKUP_EACCELERATOR_LINK}
+	if [ ! -s xcache-*.tar.gz ]; then
+		LATEST_XCACHE_LINK="http://xcache.lighttpd.net/pub/Releases/2.0.1/xcache-2.0.1.tar.gz"
+		BACKUP_XCACHE_LINK="http://wangyan.org/download/lanmp/xcache-latest.tar.bz2"
+		Extract ${LATEST_XCACHE_LINK} ${BACKUP_XCACHE_LINK}
 	else
-		tar jxf eaccelerator-*.tar.bz2
-		cd eaccelerator-*/
+		tar zxf xcache-*.tar.gz
+		cd xcache-*/
 	fi
 	/usr/local/php/bin/phpize
-	./configure --enable-eaccelerator=shared --with-php-config=/usr/local/php/bin/php-config
+	./configure --enable-xcache --enable-xcache-optimizer --enable-xcache-coverager
 	make && make install
 
-	mkdir /tmp/eaccelerator
-	chmod 777 /tmp/eaccelerator
+	cp -r admin/ /var/www/xcache
+	chmod -R 755 /var/www/xcache
+
+	mkdir /tmp/{pcov,phpcore}
+	chown www:www /tmp/{pcov,phpcore}
+	chmod 700 /tmp/{pcov,phpcore}
 
 	if [ "$PHP_VER" = "1" ]; then
 		cat >>/usr/local/php/lib/php.ini<<-EOF
-		[eaccelerator]
-		zend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/eaccelerator.so"
+		[xcache-common]
+		zend_extension = /usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/xcache.so
 		EOF
 	else
 		cat >>/usr/local/php/lib/php.ini<<-EOF
-		[eaccelerator]
-		zend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/eaccelerator.so"
+		[xcache-common]
+		zend_extension = /usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/xcache.so
 		EOF
 	fi
 	cat >>/usr/local/php/lib/php.ini<<-EOF
-	eaccelerator.shm_size="16"
-	eaccelerator.cache_dir="/tmp/eaccelerator"
-	eaccelerator.enable="1"
-	eaccelerator.optimizer="1"
-	eaccelerator.check_mtime="1"
-	eaccelerator.debug="0"
-	eaccelerator.filter=""
-	eaccelerator.shm_max="0"
-	eaccelerator.shm_ttl="900"
-	eaccelerator.shm_prune_period="900"
-	eaccelerator.shm_only="0"
-	eaccelerator.allowed_admin_path=""
-	eaccelerator.compress='1'
-	eaccelerator.compress_level='9'
-	eaccelerator.keys = "disk_only"
-	eaccelerator.sessions = "disk_only"
-	eaccelerator.content = "disk_only"
+
+	[xcache.admin]
+	xcache.admin.user = admin
+	xcache.admin.pass = e10adc3949ba59abbe56e057f20f883e
+	xcache.admin.enable_auth = On
+	xcache.test = Off
+	xcache.coredump_directory = /tmp/phpcore
+	xcache.disable_on_crash = ""
+
+	[xcache]
+	xcache.cacher = On
+	xcache.size = 256M
+	xcache.count = 8
+	xcache.slots = 8K
+	xcache.ttl = 0
+	xcache.gc_interval = 0
+	xcache.var_size = 32M
+	xcache.var_count = 8
+	xcache.var_slots = 8K
+	xcache.var_ttl = 0
+	xcache.var_maxttl = 0
+	xcache.var_gc_interval = 300
+	xcache.readonly_protection = Off
+	xcache.mmap_path = /dev/zero
+
+	[xcache.optimizer]
+	xcache.optimizer = On
+
+	[xcache.coverager]
+	xcache.coverager = On
+	xcache.coveragedump_directory = /tmp/pcov
 	EOF
 fi
 
