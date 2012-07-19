@@ -365,7 +365,7 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 		sed -i 's/\#LoadModule rpaf/LoadModule rpaf/g' /usr/local/apache/conf/httpd.conf
 
 		cat >/usr/local/apache/conf/extra/httpd-vhosts.conf<<-EOF
-		NameVirtualHost 127.0.0.1:8080
+		NameVirtualHost localhost:8080
 
 		<VirtualHost localhost:8080>
 			ServerAdmin webmaster@example.com
@@ -629,7 +629,7 @@ if [ "$PHP_VER" = "1" ];then
 	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 else
 	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
+	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 fi
 
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
@@ -683,7 +683,7 @@ if [ "$INSTALL_EA" = "y" ];then
 	else
 		cat >>/usr/local/php/lib/php.ini<<-EOF
 		[eaccelerator]
-		zend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/eaccelerator.so"
+		zend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/eaccelerator.so"
 		EOF
 	fi
 	cat >>/usr/local/php/lib/php.ini<<-EOF
