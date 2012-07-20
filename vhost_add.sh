@@ -12,7 +12,7 @@ echo "#############################################################"
 echo "# Add Virtual Host for LANMP"
 echo "# Env: Debian/Ubuntu/Redhat/CentOS"
 echo "# Author: https://wangyan.org/"
-echo "# Last modified: 2012.02.20"
+echo "# Last modified: 2012.07.20"
 echo "#############################################################"
 echo ""
 
@@ -69,9 +69,9 @@ else
 fi
 
 echo "Do you want to add MySQL DB? (y/n)"
-read -p "(Default: y):" ADD_MYSQL_DB
+read -p "(Default: n):" ADD_MYSQL_DB
 if [ -z $ADD_MYSQL_DB ]; then
-	ADD_MYSQL_DB="y"
+	ADD_MYSQL_DB="n"
 fi
 if [ "$ADD_MYSQL_DB" = 'y' ]; then
 	if [ -z $MYSQL_ROOT_PWD ]; then
@@ -168,7 +168,7 @@ if [ "$SOFTWARE" = "1" ]; then
 		echo "You dont't allow nginx rewrite!"
 		echo "---------------------------"
 	echo ""
-	 fi
+	fi
 fi
 
 echo "Do you want to add subdomain? (y/n)"
