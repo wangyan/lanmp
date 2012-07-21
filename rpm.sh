@@ -725,6 +725,7 @@ if [ "$INSTALL_XC" = "y" ];then
 	[xcache.coverager]
 	xcache.coverager = On
 	xcache.coveragedump_directory = /tmp/pcov
+
 	EOF
 fi
 
@@ -757,13 +758,13 @@ if [ "$INSTALL_IONCUBE" = "y" ];then
 	if [ "$PHP_VER" = "1" ]; then
 		cp ioncube_loader_lin_5.2.so /usr/local/zend/
 		cat >>/usr/local/php/lib/php.ini<<-EOF
-		[Zend Optimizer]
+		[ioncube loader]
 		zend_extension = /usr/local/zend/ioncube_loader_lin_5.2.so
 		EOF
 	else
 		cp ioncube_loader_lin_5.4.so /usr/local/zend/
 		cat >>/usr/local/php/lib/php.ini<<-EOF
-		[Zend Optimizer]
+		[ioncube loader]
 		zend_extension = /usr/local/zend/ioncube_loader_lin_5.4.so
 		EOF
 	fi
@@ -797,6 +798,12 @@ if [ "$INSTALL_ZEND" = "y" ];then
 		fi
 		mkdir -p /usr/local/zend/
 		cp data/5_2_x_comp/ZendOptimizer.so /usr/local/zend/
+		cat >>/usr/local/php/lib/php.ini<<-EOF
+
+		[Zend Optimizer]
+		zend_extension = /usr/local/zend/ZendOptimizer.so
+		zend_loader.enable = 1
+		EOF
 	else
 		if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
 			if [ ! -s ZendGuardLoader-php-*-linux-glibc23-x86_64.tar.gz ]; then
@@ -819,14 +826,12 @@ if [ "$INSTALL_ZEND" = "y" ];then
 		fi
 		mkdir -p /usr/local/zend/
 		cp php-5.3.x/ZendGuardLoader.so /usr/local/zend/
+		cat >>/usr/local/php/lib/php.ini<<-EOF
+
+		[Zend GuardLoader]
+		zend_extension = /usr/local/zend/ZendGuardLoader.so
+		zend_loader.enable = 1
 	fi
-
-	cat >>/usr/local/php/lib/php.ini<<-EOF
-
-	[Zend]
-	zend_extension = /usr/local/zend/ZendGuardLoader.so
-	zend_loader.enable = 1
-	EOF
 fi
 
 if [ "$SOFTWARE" = "2" ] || [ "$SOFTWARE" = "3" ]; then
