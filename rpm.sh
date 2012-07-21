@@ -608,6 +608,7 @@ make && make install
 echo "---------- Imap Extension ----------"
 
 cd ../imap/
+/usr/local/php/bin/phpize
 ./configure --with-php-config=/usr/local/php/bin/php-config  --with-kerberos --with-imap-ssl
 make && make install
 
