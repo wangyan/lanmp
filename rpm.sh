@@ -839,6 +839,7 @@ if [ "$INSTALL_ZEND" = "y" ];then
 		[Zend GuardLoader]
 		zend_extension = /usr/local/zend/ZendGuardLoader.so
 		zend_loader.enable = 1
+		EOF
 	fi
 fi
 
