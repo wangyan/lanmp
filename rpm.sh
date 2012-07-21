@@ -173,6 +173,7 @@ yum -y install libdhash libdhash-devel
 yum -y install curl curl-devel
 yum -y install libevent libevent-devel
 yum -y install ncurses ncurses-devel
+yum -y install libc-client libc-client-devel
 
 ####################### Extract Function ########################
 
@@ -604,6 +605,12 @@ cd ext/pdo_mysql/
 ./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
 make && make install
 
+echo "---------- Imap Extension ----------"
+
+cd ../imap/
+./configure --with-php-config=/usr/local/php/bin/php-config  --with-kerberos --with-imap-ssl
+make && make install
+
 echo "---------- Memcache Extension ----------"
 
 cd $LANMP_PATH
@@ -629,10 +636,10 @@ cd $LANMP_PATH/php-*/
 
 if [ "$PHP_VER" = "1" ];then
 	cp php.ini-recommended /usr/local/php/lib/php.ini
-	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
+	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\nextension = "imap.so"\n#g' /usr/local/php/lib/php.ini
 else
 	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
+	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\nextension = "imap.so"\n#g' /usr/local/php/lib/php.ini
 fi
 
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
