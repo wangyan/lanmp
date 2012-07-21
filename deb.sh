@@ -598,6 +598,7 @@ make install
 
 echo "---------- PDO MYSQL Extension ----------"
 
+cd ext/pdo_mysql/
 /usr/local/php/bin/phpize
 ./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
 make && make install
