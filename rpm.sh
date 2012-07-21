@@ -280,8 +280,9 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 	./configure && make && make install
 
 	cd ../apr-util
-	./configure && make && make install
-	ldconfig
+	./configure --with-apr=/usr/local/apr
+	make && make install
+	ldconfig && cd ../../
 
 	./configure  --prefix=/usr/local/apache --enable-mods-shared=most --enable-ssl=shared --with-mpm=prefork --with-apr=/usr/local/apr
 	make && make install
