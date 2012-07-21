@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.07.19"
+echo "# Last modified: 2012.07.21"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -88,7 +88,7 @@ echo "PHP Version = $PHP_VER"
 echo "---------------------------"
 echo ""
 
-echo "Do you want to install eAccelerator ? (y/n)"
+echo "Do you want to install xCache ? (y/n)"
 read -p "(Default: y):" INSTALL_XC
 if [ -z $INSTALL_XC ]; then
 	INSTALL_XC="y"
