@@ -163,6 +163,8 @@ fi
 
 echo "---------- Dependent Packages ----------"
 
+sed -i 's/exclude=kernel/#exclude=kernel/g' /etc/yum.conf
+
 yum -y install make cmake autoconf gcc gcc-c++ libtool
 yum -y install wget elinks bison
 yum -y install openssl openssl-devel
