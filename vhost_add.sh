@@ -397,9 +397,9 @@ fi
 
 if [ "$SOFTWARE" = "3" ]; then
 	if [ "$ADD_SUBDOMAIN" = 'n' ]; then
-		sed -i 's/\*:80/localhost:8080/g' /usr/local/apache/conf/vhosts/$DOMAIN.conf
+		sed -i 's/\*:80/127.0.0.1:8080/g' /usr/local/apache/conf/vhosts/$DOMAIN.conf
 	else
-		sed -i 's/\*:80/localhost:8080/g' /usr/local/apache/conf/vhosts/${SUBDOMAIN}.${DOMAIN}.conf
+		sed -i 's/\*:80/127.0.0.1:8080/g' /usr/local/apache/conf/vhosts/${SUBDOMAIN}.${DOMAIN}.conf
 	fi
 fi
 

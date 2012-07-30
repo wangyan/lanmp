@@ -340,7 +340,7 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 		<VirtualHost _default_:80>
 			ServerAdmin webmaster@example.com
 			DocumentRoot "$WEBROOT"
-			ServerName localhost
+			ServerName 127.0.0.1
 			ErrorLog "logs/error_log"
 			CustomLog "logs/access_log" combinedio
 			<Directory "$WEBROOT">
@@ -376,12 +376,12 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 		sed -i 's/\#LoadModule rpaf/LoadModule rpaf/g' /usr/local/apache/conf/httpd.conf
 
 		cat >/usr/local/apache/conf/extra/httpd-vhosts.conf<<-EOF
-		NameVirtualHost localhost:8080
+		NameVirtualHost 127.0.0.1:8080
 
-		<VirtualHost localhost:8080>
+		<VirtualHost 127.0.0.1:8080>
 			ServerAdmin webmaster@example.com
 			DocumentRoot "$WEBROOT"
-			ServerName localhost
+			ServerName 127.0.0.1
 			ErrorLog "logs/error_log"
 			CustomLog "logs/access_log" combinedio
 			<Directory "$WEBROOT">
