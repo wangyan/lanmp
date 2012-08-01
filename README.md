@@ -41,6 +41,17 @@
 
 详细安装和使用说明请参阅 [《Wiki 文档》](https://github.com/wangyan/lanmp/wiki)
 
+	yum -y install screen git
+	screen -S lanmp
+	git clone https://github.com/wangyan/lanmp.git
+	cd lanmp && ./install.sh
+
+虚拟主机管理
+
+	cd lanmp/
+	./vhost_add.sh #添加
+	./vhost_del.sh #删除
+
 ## 四、注意事项
 
 1.	可能会经常更新
@@ -57,6 +68,6 @@
 
 ## 五、联系方式
 
-* Email: [WangYan@188.com](WangYan@188.com)
-* Twitter：[@wang_yan](https://twitter.com/wang_yan)
-* Home Page: [WangYan Blog](http://wangyan.org/blog)
+> Email: [WangYan@188.com](WangYan@188.com)
+> Twitter：[@wang_yan](https://twitter.com/wang_yan)
+> Home Page: [WangYan Blog](http://wangyan.org/blog)
