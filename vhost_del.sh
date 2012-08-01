@@ -12,7 +12,7 @@ echo "#############################################################"
 echo "# Delete  Virtual hosts for LANMP"
 echo "# Env: Debian/Ubuntu/Redhat/CentOS"
 echo "# Author: https://wangyan.org/"
-echo "# Last modified: 2012.02.20"
+echo "# Last modified: 2012.08.01"
 echo "#############################################################"
 echo ""
 
@@ -60,9 +60,9 @@ else
 fi
 
 echo "Do you want to delete MySQL DB? (y/n)"
-read -p "(Default: y):" DELETE_MYSQL_DB
+read -p "(Default: n):" DELETE_MYSQL_DB
 if [ -z $DELETE_MYSQL_DB ]; then
-	DELETE_MYSQL_DB="y"
+	DELETE_MYSQL_DB="n"
 fi
 if [ "$DELETE_MYSQL_DB" = 'y' ]; then
 	if [ -z $MYSQL_ROOT_PWD ]; then
