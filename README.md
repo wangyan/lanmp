@@ -68,8 +68,8 @@
 
 ## 五、联系方式
 
-> Email: [WangYan@188.com](WangYan@188.com) （推荐）
+> Email: [WangYan@188.com](WangYan@188.com) （推荐）    
 > Gtalk: [myidwy@gmail.com](myidwy@gmail.com)    
-> QQ：[89791172](http://wpa.qq.com/msgrd?v=3&uin=89791172&site=qq&menu=yes)    
+> Q Q群：[138082163](http://qun.qq.com/#jointhegroup/gid/138082163)    
 > Twitter：[@wang_yan](https://twitter.com/wang_yan)    
 > Home Page: [WangYan Blog](http://wangyan.org/blog)    
