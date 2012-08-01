@@ -37,17 +37,26 @@
 
 	如`phpMyAdmin`支持额外的链接表特性，支持添加二级子域名，自定义`Rewrite`规则等等。
 
-## 三、配置文件位置
+## 三、安装和使用
 
-+	`php:	/usr/local/php/lib/php.ini`
-+	`php-fpm:	/usr/local/php/etc/php-fpm.conf`
-+	`pear:	/usr/local/php/etc/pear.conf`
-+	`nginx:	/usr/local/nginx/conf/nginx.conf`
-+	`httpd:	/usr/local/apache/conf/httpd.conf`
-+	`mysql:	/etc/my.cnf`
-+	......
+详细安装和使用说明请参阅 [《Wiki 文档》](https://github.com/wangyan/lanmp/wiki)
 
 ## 四、注意事项
 
-1.	LANMP一键安装包针对了512M内存的VPS进行了些优化。如果你的内存较低，建议您要修改php或apache的配置文件。
-2.	下载版安装包需要连接互联网，完整版安装包可以在局域安装，但需要配置好局域网的更新源。
+1.	可能会经常更新
+
+	改进措施：日常更新会推送到`develop`分支，较稳定版本才推送到`master`主分支。
+
+2.	可能会不兼容你的VPS
+
+	改进措施：如果您安装失败，麻烦您将安装目录下的`log.txt`日志文件发给我分析 [WangYan@188.com](WangYan@188.com)
+
+3.	针对512M内存的VPS进行了优化
+
+	如果你的内存较低或更高，建议您要修改php或apache的配置文件。
+
+## 五、联系方式
+
+* Email: [WangYan@188.com](WangYan@188.com)
+* Twitter：[@wang_yan](https://twitter.com/wang_yan)
+* Home Page: [WangYan Blog](http://wangyan.org/blog)
