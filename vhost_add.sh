@@ -93,7 +93,11 @@ if [ "$ADD_MYSQL_DB" = 'y' ]; then
 	echo "Please enter your MySQL db password:"
 	read -p "(Default: $FTP_PWD):" MYSQL_DB_PWD
 	if [ -z $MYSQL_DB_PWD ]; then
-		MYSQL_DB_PWD="$FTP_PWD"
+		if [ -z $FTP_PWD ]; then
+			MYSQL_DB_PWD="123456"
+		else
+			MYSQL_DB_PWD="$FTP_PWD"
+		fi
 	fi
 	echo "---------------------------"
 	echo "MySQL db name = $MYSQL_DB_NAME"
