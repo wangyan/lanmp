@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.07.19"
+echo "# Last modified: 2012.08.03"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -926,7 +926,7 @@ if [ "$SOFTWARE" != "2" ]; then
 	if [ "$SOFTWARE" = "1" ]; then
 		cp $LANMP_PATH/conf/nginx-vhost-original.conf /usr/local/nginx/conf/vhosts/localhost.conf
 	else
-		cp $LANMP_PATH/conf/nginx-vhost-proxy.conf /usr/local/nginx/conf/vhosts/localhost.conf
+		cp $LANMP_PATH/conf/nginx-vhost-localhost.conf /usr/local/nginx/conf/vhosts/localhost.conf
 	fi
 	chmod 644 /usr/local/nginx/conf/vhosts/localhost.conf
 	sed -i 's,www.DOMAIN,,g' /usr/local/nginx/conf/vhosts/localhost.conf
@@ -988,7 +988,7 @@ rm -rf /usr/local/mysql/data/test/
 rm update_mysql.sh
 rm /tmp/create_tables.sql
 
-if [ -d "$LANMP_PATH/src" ];then
+if [ ! -d "$LANMP_PATH/src" ];then
 	mkdir -p $LANMP_PATH/src/
 fi
 mv $LANMP_PATH/{*gz,*-*/,ioncube,package.xml} $LANMP_PATH/src
