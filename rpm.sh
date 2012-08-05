@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Last modified: 2012.08.03"
+echo "# Last modified: 2012.08.05"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -512,7 +512,7 @@ if [ "$PHP_VER" = "1" ]; then
 	fi
 else
 	if [ ! -s php-5.4.*.tar.gz ]; then
-		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.4.4.tar.gz"
+		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.4.5.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
