@@ -715,17 +715,17 @@ if [ "$INSTALL_XC" = "y" ];then
 
 	[xcache]
 	xcache.cacher = On
-	xcache.size = 256M
-	xcache.count = 8
+	xcache.size = 64M
+	xcache.count = 4
 	xcache.slots = 8K
-	xcache.ttl = 0
-	xcache.gc_interval = 0
-	xcache.var_size = 32M
-	xcache.var_count = 8
+	xcache.ttl = 3600
+	xcache.gc_interval = 60
+	xcache.var_size = 1M
+	xcache.var_count = 4
 	xcache.var_slots = 8K
-	xcache.var_ttl = 0
+	xcache.var_ttl = 3600
 	xcache.var_maxttl = 0
-	xcache.var_gc_interval = 300
+	xcache.var_gc_interval = 60
 	xcache.readonly_protection = Off
 	xcache.mmap_path = /dev/zero
 
