@@ -28,7 +28,7 @@ if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
 fi
 
 echo "Please enter the server IP address:"
-TEMP_IP=`ifconfig |grep 'inet' | grep -Evi '(inet6|127.0.0.1)' | awk '{print $2}' | cut -d: -f2`
+TEMP_IP=`ifconfig |grep 'inet' | grep -Evi '(inet6|127.0.0.1)' | awk '{print $2}' | cut -d: -f2 | tail -1`
 read -p "(e.g: $TEMP_IP):" IP_ADDRESS
 if [ -z $IP_ADDRESS ]; then
 	IP_ADDRESS="$TEMP_IP"
