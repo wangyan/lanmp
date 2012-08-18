@@ -930,6 +930,7 @@ if [ "$SOFTWARE" != "2" ]; then
 		cp $LANMP_PATH/conf/nginx-vhost-original.conf /usr/local/nginx/conf/vhosts/localhost.conf
 	else
 		cp $LANMP_PATH/conf/nginx-vhost-localhost.conf /usr/local/nginx/conf/vhosts/localhost.conf
+		cp $LANMP_PATH/conf/proxy_cache.inc /usr/local/nginx/conf/proxy_cache.inc
 	fi
 	chmod 644 /usr/local/nginx/conf/vhosts/localhost.conf
 	sed -i 's,www.DOMAIN,,g' /usr/local/nginx/conf/vhosts/localhost.conf
