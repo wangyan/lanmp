@@ -88,7 +88,7 @@ echo "PHP Version = $PHP_VER"
 echo "---------------------------"
 echo ""
 
-ping -c 1 10.200.79.254 > $LANMP_PATH/aliyun.txt
+ping -c 1 42.121.87.254 > $LANMP_PATH/aliyun.txt
 
 if grep -iqw ttl $LANMP_PATH/aliyun.txt; then
 	IS_ALIYUN="1"
