@@ -88,6 +88,26 @@ echo "PHP Version = $PHP_VER"
 echo "---------------------------"
 echo ""
 
+ping -c 1 10.200.79.254 > $LANMP_PATH/aliyun.txt
+
+if grep -iqw ttl $LANMP_PATH/aliyun.txt; then
+	IS_ALIYUN="1"
+else
+	IS_ALIYUN="0"
+fi
+
+if [ "$IS_ALIYUN" = "1" ]; then
+	echo "Do you want to initialize aliyun ? (y/n)"
+	read -p "(Default: n):" INIT_ALIYUN
+	if [ -z $INIT_ALIYUN ]; then
+		INIT_ALIYUN="n"
+	fi
+	echo "---------------------------"
+	echo "You choose = $INIT_ALIYUN"
+	echo "---------------------------"
+	echo ""
+fi
+
 echo "Do you want to install xcache ? (y/n)"
 read -p "(Default: y):" INSTALL_XC
 if [ -z $INSTALL_XC ]; then
@@ -135,6 +155,12 @@ char=`get_char`
 
 if [ -d "$LANMP_PATH/src" ];then
 	mv $LANMP_PATH/src/* $LANMP_PATH
+fi
+
+echo "---------- Aliyun Initialize ----------"
+
+if [ "$INIT_ALIYUN" = "y" ]; then
+	$LANMP_PATH/aliyun_init.sh
 fi
 
 echo "---------- Remove and Update ----------"
