@@ -540,8 +540,8 @@ if [ "$PHP_VER" = "1" ]; then
 	fi
 else
 	if [ ! -s php-5.4.*.tar.gz ]; then
-#		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.4.6.tar.gz"
-		LATEST_PHP_LINK="http://src-mirror.googlecode.com/files/php-5.4.6.tar.gz"
+		LATEST_PHP_VERSION=`curl -s http://www.php.net/downloads.php |grep "Current stable" |awk '{print $3}'`
+		LATEST_PHP_LINK="http://us.php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
