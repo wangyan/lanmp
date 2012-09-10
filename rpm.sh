@@ -210,27 +210,28 @@ Extract(){
 	if [ -n $1 ]; then
 		SOFTWARE_NAME=`echo $1 | awk -F/ '{print $NF}'`
 		TARBALL_TYPE=`echo $1 | awk -F. '{print $NF}'`
-		wget -c -t3 -T3 $1
+		wget -c -t3 -T3 $1 -P $LANMP_PATH/
 		if [ $? != "0" ];then
 			rm -rf $LANMP_PATH/$SOFTWARE_NAME
-			wget -c -t3 -T60 $2
+			wget -c -t3 -T60 $2 -P $LANMP_PATH/
 			SOFTWARE_NAME=`echo $2 | awk -F/ '{print $NF}'`
+			TARBALL_TYPE=`echo $2 | awk -F. '{print $NF}'`
 		fi
 	else
 		SOFTWARE_NAME=`echo $2 | awk -F/ '{print $NF}'`
 		TARBALL_TYPE=`echo $2 | awk -F. '{print $NF}'`
-		wget -c -t3 -T3 $2 || exit
+		wget -c -t3 -T3 $2 -P $LANMP_PATH/ || exit
 	fi
 	EXTRACTED_DIR=`tar tf $LANMP_PATH/$SOFTWARE_NAME | tail -n 1 | awk -F/ '{print $1}'`
 	case $TARBALL_TYPE in
 		gz|tgz)
-			tar zxf $LANMP_PATH/$SOFTWARE_NAME && cd $LANMP_PATH/$EXTRACTED_DIR || return 1
+			tar zxf $LANMP_PATH/$SOFTWARE_NAME -C $LANMP_PATH/ && cd $LANMP_PATH/$EXTRACTED_DIR || return 1
 		;;
 		bz2|tbz)
-			tar jxf $LANMP_PATH/$SOFTWARE_NAME && cd $LANMP_PATH/$EXTRACTED_DIR || return 1
+			tar jxf $LANMP_PATH/$SOFTWARE_NAME -C $LANMP_PATH/ && cd $LANMP_PATH/$EXTRACTED_DIR || return 1
 		;;
 		tar|Z)
-			tar xf $LANMP_PATH/$SOFTWARE_NAME && cd $LANMP_PATH/$EXTRACTED_DIR || return 1
+			tar xf $LANMP_PATH/$SOFTWARE_NAME -C $LANMP_PATH/ && cd $LANMP_PATH/$EXTRACTED_DIR || return 1
 		;;
 		*)
 		echo "$SOFTWARE_NAME is wrong tarball type ! "
