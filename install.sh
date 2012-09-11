@@ -8,7 +8,6 @@
 # All rights reserved.
 # Distributed under the GNU General Public License, version 3.0.
 #
-# Ver: 0.1 build 20120804"
 # Intro: https://wangyan.org/blog/lanmp.html
 #
 #====================================================================
