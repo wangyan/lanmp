@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Version: 0.2.9.21.63"
+echo "# Version: 0.2.9.22.64"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -155,7 +155,7 @@ echo ""
 char=`get_char`
 
 if [ -d "$LANMP_PATH/src" ];then
-	mv $LANMP_PATH/src/* $LANMP_PATH
+	\mv $LANMP_PATH/src/* $LANMP_PATH
 fi
 
 echo "---------- Aliyun Initialize ----------"
@@ -572,20 +572,15 @@ groupadd www
 useradd -g www -s /bin/false www
 
 if [ "$PHP_VER" = "1" ]; then
-	if [ ! -s php-5.2.7.tar.gz ]; then
-#		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.2.17.tar.gz"
-		LATEST_PHP_LINK="http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz"
-		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-5.2.17.tar.gz"
-		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
-		cd ../php-5.2.7/
-	else
-		tar -zxf php-5.2.7.tar.gz
+	if [ ! -s php-5.2.17.tar.gz ]; then
+		wget -c http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz
 	fi
 	if [ ! -s php-5.2.17-fpm-0.5.14.diff.gz ]; then
 		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-fpm-0.5.14.diff.gz
 	fi
+	tar -zxf php-5.2.17.tar.gz
 	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
-	cd php-5.2.*/
+	cd php-5.2.17/
 	if [ ! -s php-5.2.17-max-input-vars.patch ]; then
 		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-max-input-vars.patch
 	fi
@@ -606,39 +601,41 @@ fi
 if [ "$SOFTWARE" != "1" ]; then
 	./configure \
 	--prefix=/usr/local/php \
-	--with-apxs2=/usr/local/apache/bin/apxs \
-	--with-mysql=/usr/local/mysql \
-	--with-mysqli=/usr/local/mysql/bin/mysql_config \
-	--with-zlib \
-	--with-png-dir \
-	--with-jpeg-dir \
-	--with-iconv-dir \
-	--with-freetype-dir \
-	--with-gd \
-	--enable-gd-native-ttf \
-	--with-libxml-dir \
-	--with-mhash \
-	--with-mcrypt \
 	--with-curl \
 	--with-curlwrappers \
-	--with-openssl \
+	--with-freetype-dir \
 	--with-gettext \
+	--with-gd \
+	--with-iconv-dir \
+	--with-jpeg-dir \
+	--with-libxml-dir \
+	--with-mcrypt \
+	--with-mhash \
+	--with-mysql=/usr/local/mysql \
+	--with-mysqli=/usr/local/mysql/bin/mysql_config \
+	--with-openssl \
 	--with-pear \
+	--with-png-dir \
+	--with-xmlrpc \
+	--with-zlib \
 	--enable-bcmath \
 	--enable-calendar \
-	--enable-mbstring \
-	--enable-ftp \
-	--enable-zip \
-	--enable-sockets \
+	--enable-discard-path \
 	--enable-exif \
-	--enable-xml \
+	--enable-ftp \
+	--enable-gd-native-ttf \
+	--enable-inline-optimization \
+	--enable-magic-quotes \
+	--enable-mbregex \
+	--enable-mbstring \
+	--enable-shmop \
+	--enable-soap \
+	--enable-sockets \
 	--enable-sysvsem \
 	--enable-sysvshm \
-	--enable-soap \
-	--enable-shmop \
-	--enable-mbregex \
-	--enable-inline-optimization \
-	--enable-zend-multibyte
+	--enable-xml \
+	--enable-zend-multibyte \
+	--enable-zip
 else
 	./configure \
 	--prefix=/usr/local/php \

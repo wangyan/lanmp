@@ -198,78 +198,85 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 	if [ "$SOFTWARE" != "1" ]; then
 		./configure \
 		--prefix=/usr/local/php \
-		--with-apxs2=/usr/local/apache/bin/apxs \
-		--with-mysql=/usr/local/mysql \
-		--with-mysqli=/usr/local/mysql/bin/mysql_config \
-		--with-zlib \
-		--with-png-dir \
-		--with-jpeg-dir \
-		--with-iconv-dir \
-		--with-freetype-dir \
-		--with-gd \
-		--enable-gd-native-ttf \
-		--with-libxml-dir \
-		--with-mhash \
-		--with-mcrypt \
 		--with-curl \
 		--with-curlwrappers \
-		--with-openssl \
+		--with-freetype-dir \
 		--with-gettext \
+		--with-gd \
+		--with-iconv-dir \
+		--with-jpeg-dir \
+		--with-libxml-dir \
+		--with-mcrypt \
+		--with-mhash \
+		--with-mysql=/usr/local/mysql \
+		--with-mysqli=/usr/local/mysql/bin/mysql_config \
+		--with-openssl \
 		--with-pear \
+		--with-png-dir \
+		--with-xmlrpc \
+		--with-zlib \
 		--enable-bcmath \
 		--enable-calendar \
-		--enable-mbstring \
-		--enable-ftp \
-		--enable-zip \
-		--enable-sockets \
+		--enable-discard-path \
 		--enable-exif \
-		--enable-xml \
+		--enable-ftp \
+		--enable-gd-native-ttf \
+		--enable-inline-optimization \
+		--enable-magic-quotes \
+		--enable-mbregex \
+		--enable-mbstring \
+		--enable-shmop \
+		--enable-soap \
+		--enable-sockets \
 		--enable-sysvsem \
 		--enable-sysvshm \
-		--enable-soap \
-		--enable-shmop \
-		--enable-mbregex \
-		--enable-inline-optimization \
-		--enable-zend-multibyte
+		--enable-xml \
+		--enable-zend-multibyte \
+		--enable-zip
 	else
 		./configure \
 		--prefix=/usr/local/php \
-		--with-mysql=/usr/local/mysql \
-		--with-mysqli=/usr/local/mysql/bin/mysql_config \
-		--with-zlib \
-		--with-png-dir \
-		--with-jpeg-dir \
-		--with-iconv-dir \
-		--with-freetype-dir \
-		--with-gd \
-		--enable-gd-native-ttf \
-		--with-libxml-dir \
-		--with-mhash \
-		--with-mcrypt \
 		--with-curl \
 		--with-curlwrappers \
-		--with-openssl \
+		--with-freetype-dir \
 		--with-gettext \
+		--with-gd \
+		--with-iconv-dir \
+		--with-jpeg-dir \
+		--with-libxml-dir \
+		--with-mcrypt \
+		--with-mhash \
+		--with-mysql=/usr/local/mysql \
+		--with-mysqli=/usr/local/mysql/bin/mysql_config \
+		--with-mime-magic \
+		--with-openssl \
 		--with-pear \
+		--with-png-dir \
+		--with-xmlrpc \
+		--with-zlib \
 		--enable-bcmath \
 		--enable-calendar \
-		--enable-mbstring \
-		--enable-ftp \
-		--enable-zip \
-		--enable-sockets \
+		--enable-discard-path \
 		--enable-exif \
-		--enable-xml \
+		--enable-fastcgi \
+		--enable-force-cgi-redirect \
+		--enable-fpm \
+		--enable-ftp \
+		--enable-gd-native-ttf \
+		--enable-inline-optimization \
+		--enable-magic-quotes \
+		--enable-mbregex \
+		--enable-mbstring \
+		--enable-pcntl \
+		--enable-shmop \
+		--enable-soap \
+		--enable-sockets \
 		--enable-sysvsem \
 		--enable-sysvshm \
-		--enable-soap \
-		--enable-shmop \
-		--enable-mbregex \
-		--enable-inline-optimization \
+		--enable-xml \
 		--enable-zend-multibyte \
-		--enable-fpm \
-		--with-fpm-user=www-data \
-		--with-fpm-group=www-data
-	fi	
+		--enable-zip
+	fi
 
 	make ZEND_EXTRA_LIBS='-liconv'
 	make install
