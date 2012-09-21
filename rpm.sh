@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Version: 0.2.9.12.61"
+echo "# Version: 0.2.9.21.63"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -25,6 +25,7 @@ if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
 	echo "lanmp path = $LANMP_PATH"
 	echo "---------------------------"
 	echo ""
+	cd $LANMP_PATH/
 fi
 
 echo "Please enter the server IP address:"
@@ -173,6 +174,9 @@ yum -y remove mysql
 yum -y remove php
 yum -y update
 
+cp /etc/yum.conf /etc/yum.conf.bak
+sed -i 's:exclude=.*:exclude=:g' /etc/yum.conf
+
 echo "---------- Set timezone ----------"
 
 rm -rf /etc/localtime
@@ -187,9 +191,44 @@ if [ -s /etc/selinux/config ]; then
 	sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 fi
 
-echo "---------- Dependent Packages ----------"
+echo "---------- Set Library  ----------"
 
-sed -i 's/exclude=kernel/#exclude=kernel/g' /etc/yum.conf
+if [ ! `grep -iqw /lib /etc/ld.so.conf` ]; then
+	echo "/lib" >> /etc/ld.so.conf
+fi
+
+if [ ! `grep -iqw /usr/lib /etc/ld.so.conf` ]; then
+	echo "/usr/lib" >> /etc/ld.so.conf
+fi
+
+if [ -d "/usr/lib64" ] && [ ! `grep -iqw /usr/lib64 /etc/ld.so.conf` ]; then
+	echo "/usr/lib64" >> /etc/ld.so.conf
+fi
+
+if [ ! `grep -iqw /usr/local/lib /etc/ld.so.conf` ]; then
+	echo "/usr/local/lib" >> /etc/ld.so.conf
+fi
+
+ldconfig
+
+echo "---------- Set Environment  ----------"
+
+if [ "$INIT_ALIYUN" != "y" ];then
+	cat >>/etc/security/limits.conf<<-EOF
+	* soft nproc 65535
+	* hard nproc 65535
+	* soft nofile 65535
+	* hard nofile 65535
+	EOF
+	ulimit -v unlimited
+
+	cat >>/etc/sysctl.conf<<-EOF
+	fs.file-max=65535
+	EOF
+	sysctl -p
+fi
+
+echo "---------- Dependent Packages ----------"
 
 yum -y install make cmake autoconf gcc gcc-c++ libtool
 yum -y install wget elinks bison
@@ -529,19 +568,29 @@ echo "---------- php5 ----------"
 
 cd $LANMP_PATH
 
-groupadd www-data
-useradd -g www-data -M -s /bin/false www-data
+groupadd www
+useradd -g www -M -s /bin/false www
 
 if [ "$PHP_VER" = "1" ]; then
-	if [ ! -s php-5.2.*.tar.gz ]; then
+	if [ ! -s php-5.2.7.tar.gz ]; then
 #		LATEST_PHP_LINK="http://us.php.net/distributions/php-5.2.17.tar.gz"
 		LATEST_PHP_LINK="http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-5.2.17.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
+		cd ../php-5.2.7/
 	else
-		tar -zxf php-5.2.*.tar.gz
-		cd php-5.2.*/
+		tar -zxf php-5.2.7.tar.gz
 	fi
+	if [ ! -s php-5.2.17-fpm-0.5.14.diff.gz ]; then
+		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-fpm-0.5.14.diff.gz
+	fi
+	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
+	cd php-5.2.*/
+	if [ ! -s php-5.2.17-max-input-vars.patch ]; then
+		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-max-input-vars.patch
+	fi
+	patch -p1 < php-5.2.17-max-input-vars.patch
+	./buildconf --force
 else
 	if [ ! -s php-5.4.*.tar.gz ]; then
 		LATEST_PHP_VERSION=`curl -s http://www.php.net/downloads.php | awk '/Current stable/{print $3}'`
@@ -593,41 +642,46 @@ if [ "$SOFTWARE" != "1" ]; then
 else
 	./configure \
 	--prefix=/usr/local/php \
-	--with-mysql=/usr/local/mysql \
-	--with-mysqli=/usr/local/mysql/bin/mysql_config \
-	--with-zlib \
-	--with-png-dir \
-	--with-jpeg-dir \
-	--with-iconv-dir \
-	--with-freetype-dir \
-	--with-gd \
-	--enable-gd-native-ttf \
-	--with-libxml-dir \
-	--with-mhash \
-	--with-mcrypt \
 	--with-curl \
 	--with-curlwrappers \
-	--with-openssl \
+	--with-freetype-dir \
 	--with-gettext \
+	--with-gd \
+	--with-iconv-dir \
+	--with-jpeg-dir \
+	--with-libxml-dir \
+	--with-mcrypt \
+	--with-mhash \
+	--with-mysql=/usr/local/mysql \
+	--with-mysqli=/usr/local/mysql/bin/mysql_config \
+	--with-mime-magic \
+	--with-openssl \
 	--with-pear \
+	--with-png-dir \
+	--with-xmlrpc \
+	--with-zlib \
 	--enable-bcmath \
 	--enable-calendar \
-	--enable-mbstring \
-	--enable-ftp \
-	--enable-zip \
-	--enable-sockets \
+	--enable-discard-path \
 	--enable-exif \
-	--enable-xml \
+	--enable-fastcgi \
+	--enable-force-cgi-redirect \
+	--enable-fpm \
+	--enable-ftp \
+	--enable-gd-native-ttf \
+	--enable-inline-optimization \
+	--enable-magic-quotes \
+	--enable-mbregex \
+	--enable-mbstring \
+	--enable-pcntl \
+	--enable-shmop \
+	--enable-soap \
+	--enable-sockets \
 	--enable-sysvsem \
 	--enable-sysvshm \
-	--enable-soap \
-	--enable-shmop \
-	--enable-mbregex \
-	--enable-inline-optimization \
+	--enable-xml \
 	--enable-zend-multibyte \
-	--enable-fpm \
-	--with-fpm-user=www-data \
-	--with-fpm-group=www-data
+	--enable-zip
 fi
 
 make ZEND_EXTRA_LIBS='-liconv'
@@ -693,10 +747,9 @@ sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 3600/g' /usr/lo
 if [ "$SOFTWARE" = "2" ] || [ "$SOFTWARE" = "3" ]; then
 	/etc/init.d/httpd start
 else
-	cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+	cp $LANMP_PATH/conf/init.d.php-fpm /etc/init.d/php-fpm
 	chmod 755 /etc/init.d/php-fpm
 	chkconfig php-fpm on
-
 	cp $LANMP_PATH/conf/php-fpm.conf /usr/local/php/etc/php-fpm.conf
 	/etc/init.d/php-fpm start
 fi
