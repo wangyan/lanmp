@@ -741,7 +741,6 @@ sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /usr/local/php/lib/php.ini
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/g' /usr/local/php/lib/php.ini
 sed -i 's#;date.timezone =#date.timezone = Asia/Shanghai#g' /usr/local/php/lib/php.ini
 sed -i 's#;sendmail_path =#sendmail_path = /usr/sbin/sendmail -t -i#g' /usr/local/php/lib/php.ini
-sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 3600/g' /usr/local/php/lib/php.ini
 
 if [ "$SOFTWARE" = "2" ] || [ "$SOFTWARE" = "3" ]; then
 	/etc/init.d/httpd start
