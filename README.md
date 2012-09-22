@@ -1,6 +1,6 @@
 ## 一、简介
 
-1.	`LANMP` 指的是 `Linux` + `Apache` + `Nginx` + `MySQL` + `PHP` 运行环境。
+1.    `LANMP` 指的是 `Linux` + `Apache` + `Nginx` + `MySQL` + `PHP` 运行环境。
 2.	`LANMP` 一键安装包是用 `Linux Shell` 语言编写的，用于在 `Linux` 系统(`Redhat`/`CentOS`/`Debian`/`Ubuntu`)上一键安装 `LANMP`环境的工具包。
 
 ## 二、特点与优势
@@ -49,47 +49,35 @@
 
 详细安装和使用说明请参阅 [《Wiki 文档》](https://github.com/wangyan/lanmp/wiki)
 
-1.	安装稳定版
+1、安装方法
+
+稳定版是相对稳定的版本，开发版是更新频率较高的版本，带有新特性，但可能存在较多Bug。
+
+方法一：直接下载已打包版本
 
 	yum -y install screen  #Redhat/CentOS
 	apt-get -y install screen  #Debian/Ubuntu
 	screen -S lanmp
-	wget -c http://wangyan.org/download/lanmp/lanmp-latest.tar.gz
+	wget -c http://wangyan.org/download/lanmp/lanmp-latest.tar.gz #安装稳定版
+	wget -c http://wangyan.org/download/lanmp/lanmp-dev-latest.tar.gz #开发版（二选一）
 	cd lanmp && ./install.sh
 
-	通过Git安装稳定版 （推荐）
+方法二：通过Git下载（推荐）
 
 	yum -y install screen git  #Redhat/CentOS
 	apt-get -y install screen git-core git-gui  #Debian/Ubuntu
 	screen -S lanmp
 	git clone https://github.com/wangyan/lanmp.git
-	cd lanmp && ./install.sh
+	cd lanmp && ./install.sh #安装稳定版
+	cd lanmp && git checkout develop && ./install.sh #安装开发版（二选一）
 
-2.	安装开发版
-
-	yum -y install screen  #Redhat/CentOS
-	apt-get -y install screen  #Debian/Ubuntu
-	screen -S lanmp
-	wget -c http://wangyan.org/download/lanmp/lanmp-dev-latest.tar.gz
-	cd lanmp && ./install.sh
-
-	通过Git安装开发版 （推荐）
-
-	yum -y install screen git  #Redhat/CentOS
-	apt-get -y install screen git-core git-gui  #Debian/Ubuntu
-	screen -S lanmp
-	git clone https://github.com/wangyan/lanmp.git
-	cd lanmp
-	git checkout develop
-	./install.sh
-
-3.	虚拟主机管理
+3、虚拟主机管理
 
 	cd lanmp/
 	./vhost_add.sh #添加
 	./vhost_del.sh #删除
 
-4.	自动升级
+4、自动升级
 
 	cd lanmp/
 	./upgrade.sh
@@ -110,8 +98,8 @@
 
 ## 五、联系方式
 
-> Email: [WangYan@188.com](WangYan@188.com) （推荐）    
-> Gtalk: [myidwy@gmail.com](myidwy@gmail.com)    
-> Q Q群：[138082163](http://qun.qq.com/#jointhegroup/gid/138082163)    
-> Twitter：[@wang_yan](https://twitter.com/wang_yan)    
-> Home Page: [WangYan Blog](http://wangyan.org/blog)    
+> Email: [WangYan@188.com](WangYan@188.com) （推荐）  
+> Gtalk: [myidwy@gmail.com](myidwy@gmail.com)  
+> Q Q群：[138082163](http://qun.qq.com/#jointhegroup/gid/138082163)  
+> Twitter：[@wang_yan](https://twitter.com/wang_yan)  
+> Home Page: [WangYan Blog](http://wangyan.org/blog)  

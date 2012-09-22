@@ -13,8 +13,16 @@
 #====================================================================
 
 if [ $(id -u) != "0" ]; then
-    printf "Error: You must be root to run this script!"
+    clear && echo "Error: You must be root to run this script!"
     exit 1
+fi
+
+LANMP_PATH=`pwd`
+if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
+	clear && echo "Please enter lanmp script path:"
+	read -p "(Default path: ${LANMP_PATH}/lanmp):" LANMP_PATH
+	[ -z "$LANMP_PATH" ] && LANMP_PATH=$(pwd)/lanmp
+	cd $LANMP_PATH/
 fi
 
 DISTRIBUTION=`awk 'NR==1{print $1}' /etc/issue`
@@ -42,12 +50,13 @@ else
     fi
 fi
 
-mkfifo fifo
-cat fifo | tee log.txt &
-exec 1>fifo
+[ -r "$LANMP_PATH/fifo" ] && rm -rf $LANMP_PATH/fifo
+mkfifo $LANMP_PATH/fifo
+cat $LANMP_PATH/fifo | tee $LANMP_PATH/log.txt &
+exec 1>$LANMP_PATH/fifo
 exec 2>&1
 
-/bin/bash ${PACKAGE}.sh
+/bin/bash ${LANMP_PATH}/${PACKAGE}.sh
 
-sed -i '/password/d' log.txt
-rm -rf fifo
+sed -i '/password/d' $LANMP_PATH/log.txt
+rm -rf $LANMP_PATH/fifo

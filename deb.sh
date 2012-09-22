@@ -2,12 +2,20 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export PATH
 
+LANMP_PATH=`pwd`
+if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
+	clear && echo "Please enter lanmp script path:"
+	read -p "(Default path: ${LANMP_PATH}/lanmp):" LANMP_PATH
+	[ -z "$LANMP_PATH" ] && LANMP_PATH=$(pwd)/lanmp
+	cd $LANMP_PATH/
+fi
+
 clear
 echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Version: 0.2.9.22.69"
+echo "# Version: $(awk '/version/{print $2}' $LANMP_PATH/Changelog)"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -15,18 +23,6 @@ echo "# Distributed under the GNU General Public License, version 3.0."
 echo "#"
 echo "#############################################################"
 echo ""
-
-LANMP_PATH=`pwd`
-if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
-	echo "Please enter lanmp script path:"
-	read -p "(Default path: /root/lanmp):" LANMP_PATH
-	[ -z "$LANMP_PATH" ] && LANMP_PATH="/root/lanmp"
-	echo "---------------------------"
-	echo "lanmp path = $LANMP_PATH"
-	echo "---------------------------"
-	echo ""
-	cd $LANMP_PATH/
-fi
 
 echo "Please enter the server IP address:"
 TEMP_IP=`ifconfig |grep 'inet' | grep -Evi '(inet6|127.0.0.1)' | awk '{print $2}' | cut -d: -f2 | tail -1`
@@ -285,13 +281,13 @@ rm -rf /etc/my.cnf /etc/mysql/
 groupadd mysql
 useradd -g mysql -s /bin/false mysql
 
-if [ ! -s mysql-*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/mysql-*.tar.gz ]; then
 	LATEST_MYSQL_LINK=`elinks ftp://mirror.csclub.uwaterloo.ca/mysql/Downloads/MySQL-5.5/ | awk '/ftp:.+\.[0-9][0-9][a-z]?\.tar\.gz$/{print $2}' | tail -n 1`
 	BACKUP_MYSQL_LINK='http://wangyan.org/download/lanmp-src/mysql-latest.tar.gz'
 	Extract ${LATEST_MYSQL_LINK} ${BACKUP_MYSQL_LINK}
 else
-	tar -zxf mysql-*.tar.gz
-	cd mysql-*
+	tar -zxf mysql-*.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/mysql-*
 fi
 
 cmake . \
@@ -317,7 +313,9 @@ cp support-files/mysql.server /etc/init.d/mysql
 chmod 755 /etc/init.d/mysql
 update-rc.d -f mysql defaults
 
-echo "/usr/local/mysql/lib/" >> /etc/ld.so.conf
+if [ ! `grep -iqw /usr/local/mysql/lib /etc/ld.so.conf` ]; then
+	echo "/usr/local/mysql/lib" >> /etc/ld.so.conf
+fi
 ldconfig
 
 cd /usr/local/mysql/bin
@@ -332,27 +330,27 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 
 	echo "---------- Apache ----------"
 
-	cd $LANMP_PATH
+	cd $LANMP_PATH/
 
-	if [ ! -s httpd-*.tar.gz ]; then
+	if [ ! $LANMP_PATH/-s httpd-*.tar.gz ]; then
 #		LATEST_APACHE_LINK=`elinks http://www.apache.org/dist/httpd/ | awk '/http.+[0-9]\.tar\.gz$/{print $2}' | tail -1`
 #		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp-src/httpd-latest.tar.gz"
 		LATEST_APACHE_LINK="http://src-mirror.googlecode.com/files/httpd-2.2.22.tar.gz"
 		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp-src/httpd-2.2.22.tar.gz"
 		Extract ${LATEST_APACHE_LINK} ${BACKUP_APACHE_LINK}
 	else
-		tar -zxf httpd-*.tar.gz
-		cd httpd-*/
+		tar $LANMP_PATH/-zxf httpd-*.tar.gz -C $LANMP_PATH/
 	fi
 
-	cd srclib/apr
+	cd $LANMP_PATH/httpd-*/srclib/apr
 	./configure && make && make install
 
-	cd ../apr-util
+	cd $LANMP_PATH/httpd-*/srclib/apr-util
 	./configure --with-apr=/usr/local/apr
 	make && make install
-	ldconfig && cd ../../
+	ldconfig
 
+	cd $LANMP_PATH/httpd-*/
 	./configure  --prefix=/usr/local/apache --enable-mods-shared=most --enable-ssl=shared --with-mpm=prefork --with-apr=/usr/local/apr
 	make && make install
 
@@ -428,14 +426,14 @@ if [[ "$SOFTWARE" = "2" || "$SOFTWARE" = "3" ]]; then
 
 		cd $LANMP_PATH
 
-		if [ ! -s mod_rpaf-*.tar.gz ]; then
+		if [ ! -s $LANMP_PATH/mod_rpaf-*.tar.gz ]; then
 #			LATEST_RPAF_LINK="http://stderr.net/apache/rpaf/download/mod_rpaf-0.6.tar.gz"
 			LATEST_RPAF_LINK="http://src-mirror.googlecode.com/files/mod_rpaf-0.6.tar.gz"
 			BACKUP_RPAF_LINK="http://wangyan.org/download/lanmp-src/mod_rpaf-latest.tar.gz"
 			Extract ${LATEST_RPAF_LINK} ${BACKUP_RPAF_LINK}
 		else
-			tar zxf mod_rpaf-*.tar.gz
-			cd mod_rpaf-*/
+			tar zxf $LANMP_PATH/mod_rpaf-*.tar.gz -C $LANMP_PATH/
+			cd $LANMP_PATH/mod_rpaf-*/
 		fi
 		/usr/local/apache/bin/apxs -i -c -n mod_rpaf-2.0.so mod_rpaf-2.0.c
 
@@ -470,131 +468,118 @@ echo "===================== PHP5 Install ===================="
 
 echo "---------- libpng ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s libpng-*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/libpng-*.tar.gz ]; then
 	LATEST_LIBPNG_LINK=`elinks ftp://ftp.simplesystems.org/pub/libpng/png/src/ | awk '/ftp:.+libpng-.+gz$/{print $2}' | tail -1`
 	BACKUP_LIBPNG_LINK="http://wangyan.org/download/lanmp-src/libpng-latest.tar.gz"
 	Extract ${LATEST_LIBPNG_LINK} ${BACKUP_LIBPNG_LINK}
 else
-	tar -zxf libpng-*.tar.gz
-	cd libpng-*/
+	tar -zxf $LANMP_PATH/libpng-*.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/libpng-*/
 fi
 ./configure --prefix=/usr/local
 make && make install
 
 echo "---------- libjpeg ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s jpegsrc.*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/jpegsrc.*.tar.gz ]; then
 	LATEST_LIBJPEG_LINK=`elinks http://www.ijg.org/files/ | awk '/http.+jpegsrc.+$/{print $2}' | tail -1`
 	BACKUP_LIBJPEG_LINK="http://wangyan.org/download/lanmp-src/jpegsrc.latest.tar.gz"
 	Extract ${LATEST_LIBJPEG_LINK} ${BACKUP_LIBJPEG_LINK}
 else
-	tar -zxf jpegsrc.*.tar.gz
-	cd jpeg-*/
+	tar -zxf $LANMP_PATH/jpegsrc.*.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/jpeg-*/
 fi
 ./configure --prefix=/usr/local
 make && make install
 
 echo "---------- libiconv ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s libiconv-*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/libiconv-*.tar.gz ]; then
 	LATEST_LIBICONV_LINK=`elinks http://ftp.gnu.org/pub/gnu/libiconv/ | awk '/http.+.gz$/{print $2}' | sort -n -k 4 -t . | tail -1`
 	BACKUP_LIBICONV_LINK="http://wangyan.org/download/lanmp-src/libiconv-latest.tar.gz"
 	Extract ${LATEST_LIBICONV_LINK} ${LATEST_LIBICONV_LINK}
 else
-	tar -zxf libiconv-*.tar.gz
-	cd libiconv-*/
+	tar -zxf $LANMP_PATH/libiconv-*.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/libiconv-*/
 fi
 ./configure --prefix=/usr/local
 make && make install
 
 echo "---------- libmcrypt ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s libmcrypt-*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/libmcrypt-*.tar.gz ]; then
 #	LATEST_LIBMCRYPT_LINK="http://nchc.dl.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 	LATEST_LIBMCRYPT_LINK="http://src-mirror.googlecode.com/files/libmcrypt-2.5.8.tar.gz"
 	BACKUP_LIBMCRYPT_LINK="http://wangyan.org/download/lanmp-src/libmcrypt-latest.tar.gz"
 	Extract ${LATEST_LIBMCRYPT_LINK} ${BACKUP_LIBMCRYPT_LINK}
 else
-	tar -zxf libmcrypt-*.tar.gz
-	cd libmcrypt-*/
+	tar -zxf $LANMP_PATH/libmcrypt-*.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/libmcrypt-*/
 fi
 ./configure --prefix=/usr/local
 make && make install
 
 echo "---------- mhash ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s mhash-*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/mhash-*.tar.gz ]; then
 #	LATEST_MHASH_LINK="http://nchc.dl.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
 	LATEST_MHASH_LINK="http://src-mirror.googlecode.com/files/mhash-0.9.9.9.tar.gz"
 	BACKUP_MHASH_LINK="http://wangyan.org/download/lanmp-src/mhash-latest.tar.gz"
 	Extract ${LATEST_MHASH_LINK} ${BACKUP_MHASH_LINK}
 else
-	tar -zxf mhash-0.9.9.9.tar.gz
-	cd mhash-*/
+	tar -zxf $LANMP_PATH/mhash-0.9.9.9.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/mhash-*/
 fi
 ./configure --prefix=/usr/local
 make && make install
 
-echo "/usr/local/lib" >> /etc/ld.so.conf
 ldconfig
 
 echo "---------- mcrypt ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s mcrypt-*.tar.gz ]; then
+if [ ! -s $LANMP_PATH/mcrypt-*.tar.gz ]; then
 #	LATEST_MCRYPT_LINK="http://nchc.dl.sourceforge.net/project/mcrypt/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz"
 	LATEST_MCRYPT_LINK="http://src-mirror.googlecode.com/files/mcrypt-2.6.8.tar.gz"
 	BACKUP_MCRYPT_LINK="http://wangyan.org/download/lanmp-src/mcrypt-latest.tar.gz"
 	Extract ${LATEST_MCRYPT_LINK} ${BACKUP_MCRYPT_LINK}
 else
-	tar -zxf mcrypt-*.tar.gz
-	cd mcrypt-*/
+	tar -zxf $LANMP_PATH/mcrypt-*.tar.gz -C $LANMP_PATH/
+	cd $LANMP_PATH/mcrypt-*/
 fi
 ./configure --prefix=/usr/local
 make && make install
 
 echo "---------- php5 ----------"
 
-cd $LANMP_PATH
-
 groupadd www
 useradd -g www -s /bin/false www
 
 if [ "$PHP_VER" = "1" ]; then
-	if [ ! -s php-5.2.17.tar.gz ]; then
-		wget -c http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz
+	if [ ! -s $LANMP_PATH/php-5.2.17.tar.gz ]; then
+		wget -c http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz -P $LANMP_PATH/
 	fi
-	if [ ! -s php-5.2.17-fpm-0.5.14.diff.gz ]; then
-		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-fpm-0.5.14.diff.gz
+	tar -zxf $LANMP_PATH/php-5.2.17.tar.gz -C $LANMP_PATH/
+
+	if [ ! -s $LANMP_PATH/php-5.2.17-fpm-0.5.14.diff.gz ]; then
+		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-fpm-0.5.14.diff.gz -P $LANMP_PATH/
 	fi
-	tar -zxf php-5.2.17.tar.gz
-	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
-	cd php-5.2.17/
+	gzip -cd $LANMP_PATH/php-5.2.17-fpm-0.5.14.diff.gz | patch -d $LANMP_PATH/php-5.2.17 -p1
+
+	cd $LANMP_PATH/php-5.2.17/
 	if [ ! -s php-5.2.17-max-input-vars.patch ]; then
 		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-max-input-vars.patch
 	fi
 	patch -p1 < php-5.2.17-max-input-vars.patch
 	./buildconf --force
 else
-	if [ ! -s php-5.4.*.tar.gz ]; then
+	if [ ! -s $LANMP_PATH/php-5.4.*.tar.gz ]; then
 		LATEST_PHP_VERSION=`curl -s http://www.php.net/downloads.php | awk '/Current stable/{print $3}'`
 		LATEST_PHP_LINK="http://us.php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp-src/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
-		tar -zxf php-5.4.*.tar.gz
-		cd php-5.4.*/
+		tar -zxf $LANMP_PATH/php-5.4.*.tar.gz -C $LANMP_PATH/
+		cd $LANMP_PATH/php-5.4.*/
 	fi
 fi
 
@@ -700,16 +685,14 @@ make && make install
 
 echo "---------- Memcache Extension ----------"
 
-cd $LANMP_PATH
-
-if [ ! -s memcache-*.tgz ]; then
+if [ ! -s $LANMP_PATH/memcache-*.tgz ]; then
 #	LATEST_MEMCACHE_LINK="http://pecl.php.net/get/memcache-2.2.6.tgz"
 	LATEST_MEMCACHE_LINK="http://src-mirror.googlecode.com/files/memcache-2.2.6.tgz"
 	BACKUP_MEMCACHE_LINK="http://wangyan.org/download/lanmp-src/memcache-latest.tgz"
 	Extract ${LATEST_MEMCACHE_LINK} ${BACKUP_MEMCACHE_LINK}
 else
-	tar -zxf memcache-*.tgz
-	cd memcache-*/
+	tar -zxf $LANMP_PATH/memcache-*.tgz -C $LANMP_PATH/
+	cd $LANMP_PATH/memcache-*/
 fi
 /usr/local/php/bin/phpize
 ./configure --with-php-config=/usr/local/php/bin/php-config --with-zlib-dir --enable-memcache
@@ -755,16 +738,14 @@ echo "---------- Xcache Extension ----------"
 
 if [ "$INSTALL_XC" = "y" ];then
 
-	cd $LANMP_PATH
-
-	if [ ! -s xcache-*.tar.gz ]; then
+	if [ ! -s $LANMP_PATH/xcache-*.tar.gz ]; then
 #		LATEST_XCACHE_LINK="http://xcache.lighttpd.net/pub/Releases/2.0.1/xcache-2.0.1.tar.gz"
 		LATEST_XCACHE_LINK="http://src-mirror.googlecode.com/files/xcache-2.0.1.tar.gz"
 		BACKUP_XCACHE_LINK="http://wangyan.org/download/lanmp-src/xcache-latest.tar.gz"
 		Extract ${LATEST_XCACHE_LINK} ${BACKUP_XCACHE_LINK}
 	else
-		tar zxf xcache-*.tar.gz
-		cd xcache-*/
+		tar zxf $LANMP_PATH/xcache-*.tar.gz -C $LANMP_PATH/
+		cd $LANMP_PATH/xcache-*/
 	fi
 	/usr/local/php/bin/phpize
 	./configure --enable-xcache --enable-xcache-optimizer --enable-xcache-coverager
@@ -826,28 +807,26 @@ fi
 
 echo "---------- Ioncube Extension ----------"
 
-cd $LANMP_PATH
-
 if [ "$INSTALL_IONCUBE" = "y" ];then
 	if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
-		if [ ! -s ioncube_loaders_lin_x86-64.tar.gz ]; then
+		if [ ! -s $LANMP_PATH/ioncube_loaders_lin_x86-64.tar.gz ]; then
 #			LATEST_IONCUBE_LINK="http://downloads2.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz"
 			LATEST_IONCUBE_LINK="http://src-mirror.googlecode.com/files/ioncube_loaders_lin_x86-64.tar.gz"
 			BACKUP_IONCUBE_LINK="http://wangyan.org/download/lanmp-src/ioncube_loaders_lin_x86-64.tar.gz"
 			Extract ${LATEST_IONCUBE_LINK} ${BACKUP_IONCUBE_LINK}
 		else
-			tar -zxf ioncube_loaders_lin_x86-64.tar.gz
-			cd ioncube/
+			tar -zxf $LANMP_PATH/ioncube_loaders_lin_x86-64.tar.gz -C $LANMP_PATH/
+			cd $LANMP_PATH/ioncube/
 		fi
 	else
-		if [ ! -s ioncube_loaders_lin_x86.tar.gz ]; then
+		if [ ! -s $LANMP_PATH/ioncube_loaders_lin_x86.tar.gz ]; then
 #			LATEST_IONCUBE_LINK="http://downloads2.ioncube.com/loader_downloads/ioncube_loaders_lin_x86.tar.gz"
 			LATEST_IONCUBE_LINK="http://src-mirror.googlecode.com/files/ioncube_loaders_lin_x86.tar.gz"
 			BACKUP_IONCUBE_LINK="http://wangyan.org/download/lanmp-src/ioncube_loaders_lin_x86.tar.gz"
 			Extract ${LATEST_IONCUBE_LINK} ${BACKUP_IONCUBE_LINK}
 		else
-			tar -zxf ioncube_loaders_lin_x86.tar.gz
-			cd ioncube/
+			tar -zxf $LANMP_PATH/ioncube_loaders_lin_x86.tar.gz -C $LANMP_PATH/
+			cd $LANMP_PATH/ioncube/
 		fi
 	fi
 
@@ -869,30 +848,28 @@ fi
 
 echo "---------- ZendOptimizer Extension ----------"
 
-cd $LANMP_PATH
-
 if [ "$INSTALL_ZEND" = "y" ];then
 
 	if [ "$PHP_VER" = "1" ]; then
 		if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
-			if [ ! -s ZendOptimizer-*-linux-glibc23-x86_64.tar.gz ]; then
+			if [ ! -s $LANMP_PATH/ZendOptimizer-*-linux-glibc23-x86_64.tar.gz ]; then
 #				LATEST_ZEND_LINK="http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz"
 				LATEST_ZEND_LINK="http://src-mirror.googlecode.com/files/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz"
 				BACKUP_ZEND_LINK="http://wangyan.org/download/lanmp-src/ZendOptimizer-latest-linux-glibc23-x86_64.tar.gz"
 				Extract ${LATEST_ZEND_LINK} ${BACKUP_ZEND_LINK}
 			else
-				tar zxf ZendOptimizer-*-linux-glibc23-x86_64.tar.gz
-				cd ZendOptimizer-*-linux-glibc23-x86_64/
+				tar zxf $LANMP_PATH/ZendOptimizer-*-linux-glibc23-x86_64.tar.gz -C $LANMP_PATH/
+				cd $LANMP_PATH/ZendOptimizer-*-linux-glibc23-x86_64/
 			fi
 		else
-			if [ ! -s ZendOptimizer-*-linux-glibc23-i386.tar.gz ]; then
+			if [ ! -s $LANMP_PATH/ZendOptimizer-*-linux-glibc23-i386.tar.gz ]; then
 #				LATEST_ZEND_LINK="http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz"
 				LATEST_ZEND_LINK="http://src-mirror.googlecode.com/files/ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz"
 				BACKUP_ZEND_LINK="http://wangyan.org/download/lanmp-src/ZendOptimizer-latest-linux-glibc23-i386.tar.gz"
 				Extract ${LATEST_ZEND_LINK} ${BACKUP_ZEND_LINK}
 			else
-				tar zxf ZendOptimizer-*-linux-glibc23-i386.tar.gz
-				cd ZendOptimizer-*-linux-glibc23-i386/
+				tar zxf $LANMP_PATH/ZendOptimizer-*-linux-glibc23-i386.tar.gz -C $LANMP_PATH/
+				cd $LANMP_PATH/ZendOptimizer-*-linux-glibc23-i386/
 			fi
 		fi
 		mkdir -p /usr/local/zend/
@@ -905,24 +882,24 @@ if [ "$INSTALL_ZEND" = "y" ];then
 		EOF
 	else
 		if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
-			if [ ! -s ZendGuardLoader-php-*-linux-glibc23-x86_64.tar.gz ]; then
+			if [ ! -s $LANMP_PATH/ZendGuardLoader-php-*-linux-glibc23-x86_64.tar.gz ]; then
 #				LATEST_GUARD_LINK="http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz"
 				LATEST_GUARD_LINK="http://src-mirror.googlecode.com/files/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz"
 				BACKUP_GUARD_LINK="http://wangyan.org/download/lanmp-src/ZendGuardLoader-php-latest-linux-glibc23-x86_64.tar.gz"
 				Extract ${LATEST_GUARD_LINK} ${BACKUP_GUARD_LINK}
 			else
-				tar -zxf ZendGuardLoader-php-*-linux-glibc23-x86_64.tar.gz
-				cd ZendGuardLoader-php-*-linux-glibc23-x86_64/
+				tar -zxf $LANMP_PATH/ZendGuardLoader-php-*-linux-glibc23-x86_64.tar.gz -C $LANMP_PATH/
+				cd $LANMP_PATH/ZendGuardLoader-php-*-linux-glibc23-x86_64/
 			fi
 		else
-			if [ ! -s ZendGuardLoader-php-*-linux-glibc23-i386.tar.gz ]; then
+			if [ ! -s $LANMP_PATH/ZendGuardLoader-php-*-linux-glibc23-i386.tar.gz ]; then
 #				LATEST_GUARD_LINK="http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-i386.tar.gz"
 				LATEST_GUARD_LINK="http://src-mirror.googlecode.com/files/ZendGuardLoader-php-5.3-linux-glibc23-i386.tar.gz"
 				BACKUP_GUARD_LINK="http://wangyan.org/download/lanmp-src/ZendGuardLoader-php-latest-linux-glibc23-i386.tar.gz"
 				Extract ${LATEST_GUARD_LINK} ${BACKUP_GUARD_LINK}
 			else
-				tar -zxf ZendGuardLoader-php-*-linux-glibc23-i386.tar.gz
-				cd ZendGuardLoader-php-*-linux-glibc23-i386/
+				tar -zxf $LANMP_PATH/ZendGuardLoader-php-*-linux-glibc23-i386.tar.gz -C $LANMP_PATH/
+				cd $LANMP_PATH/ZendGuardLoader-php-*-linux-glibc23-i386/
 			fi
 		fi
 		mkdir -p /usr/local/zend/
@@ -951,15 +928,13 @@ if [ "$SOFTWARE" != "2" ]; then
 
 	echo "---------- Pcre ----------"
 
-	cd $LANMP_PATH
-
-	if [ ! -s pcre-*.tar.gz ]; then
+	if [ ! -s $LANMP_PATH/pcre-*.tar.gz ]; then
 		LATEST_PCRE_LINK=`elinks ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/ | awk '/ftp:.+gz$/{print $2}' | tail -1`
 		BACKUP_PCRE_LINK="http://wangyan.org/download/lanmp-src/pcre-latest.tar.gz"
 		Extract ${LATEST_PCRE_LINK} ${BACKUP_PCRE_LINK}
 	else
-		tar -zxf pcre-*.tar.gz
-		cd pcre-*
+		tar -zxf $LANMP_PATH/pcre-*.tar.gz -C $LANMP_PATH/
+		cd $LANMP_PATH/pcre-*
 	fi
 	./configure
 	make && make install
@@ -967,16 +942,15 @@ if [ "$SOFTWARE" != "2" ]; then
 
 	echo "---------- Nginx ----------"
 
-	cd $LANMP_PATH
 	mkdir -p /var/tmp/nginx
 	
-	if [ ! -s nginx-*.tar.gz ]; then
+	if [ ! -s $LANMP_PATH/nginx-*.tar.gz ]; then
 		LATEST_NGINX_LINK=`elinks http://nginx.org/download/ | awk '/http.+gz$/{print $2}' | tail -1`
 		BACKUP_NGINX_LINK="http://wangyan.org/download/lanmp-src/nginx-latest.tar.gz"
 		Extract ${LATEST_NGINX_LINK} ${BACKUP_NGINX_LINK}
 	else
-		tar -zxf nginx-*.tar.gz
-		cd nginx-*/
+		tar -zxf $LANMP_PATH/nginx-*.tar.gz -C $LANMP_PATH/
+		cd $LANMP_PATH/nginx-*/
 	fi
 
 	./configure \
@@ -1044,11 +1018,9 @@ fi
 
 echo "================phpMyAdmin Install==============="
 
-cd $LANMP_PATH
-
 PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv 'rc' | tail -1`
 
-if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
+if [ ! -s $LANMP_PATH/phpMyAdmin-*-all-languages.tar.gz ]; then
 	PMA_LINK="http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/"
 	LATEST_PMA_LINK="${PMA_LINK}${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 	BACKUP_PMA_LINK="http://wangyan.org/download/lanmp-src/phpMyAdmin-latest-all-languages.tar.gz"
@@ -1056,7 +1028,7 @@ if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
 	mkdir -p $WEBROOT/phpmyadmin
 	mv * $WEBROOT/phpmyadmin
 else
-	tar -zxf phpMyAdmin-*-all-languages.tar.gz -C $WEBROOT
+	tar -zxf $LANMP_PATH/phpMyAdmin-*-all-languages.tar.gz -C $WEBROOT
 	mv $WEBROOT/phpMyAdmin-*-all-languages $WEBROOT/phpmyadmin
 fi
 
@@ -1073,15 +1045,15 @@ else
 	cp $WEBROOT/phpmyadmin/examples/create_tables.sql /tmp/create_tables.sql
 fi
 
-cat >>update_mysql.sh<<EOF
+cat >>$LANMP_PATH/update_mysql.sh<<EOF
 create database phpmyadmin;
 use phpmyadmin;
 source /tmp/create_tables.sql;
 EOF
 
-cat update_mysql.sh | mysql -u root -p$MYSQL_ROOT_PWD
+cat $LANMP_PATH/update_mysql.sh | mysql -u root -p$MYSQL_ROOT_PWD
 rm -rf /usr/local/mysql/data/test/
-rm update_mysql.sh
+rm $LANMP_PATH/update_mysql.sh
 rm /tmp/create_tables.sql
 
 echo -e "phpmyadmin\t${PMA_VERSION}" >> $LANMP_PATH/version.txt 2>&1
