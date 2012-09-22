@@ -11,7 +11,7 @@
 
 2.	最新版本软件包
 
-	全部采用最新稳定版本的软件包，如`PHP 5.5`（可选择`PHP 5.2`）系列，`MySQL 5.5`系列。
+	全部采用最新稳定版本的软件包，如`PHP 5.4`（可选择`PHP 5.2`）系列，`MySQL 5.5`系列。
 
 3.	下载更智能更方便
 
@@ -33,7 +33,15 @@
 
 	模块化、清晰的安装流程，脚本非常易于理解，因此您可以很容易修改脚本。
 
-8.	其他
+8.	简洁与高效
+
+	只安装必须的东西，没有臃肿的图形界面。
+
+9.	支持自动升级
+
+	安装前可自动安装最新版本，安装后也可升级到最新版本。
+
+10.	其他
 
 	如`phpMyAdmin`支持额外的链接表特性，支持添加二级子域名，自定义`Rewrite`规则等等。
 
@@ -41,16 +49,50 @@
 
 详细安装和使用说明请参阅 [《Wiki 文档》](https://github.com/wangyan/lanmp/wiki)
 
-	yum -y install screen git
+1.	安装稳定版
+
+	yum -y install screen  #Redhat/CentOS
+	apt-get -y install screen  #Debian/Ubuntu
+	screen -S lanmp
+	wget -c http://wangyan.org/download/lanmp/lanmp-latest.tar.gz
+	cd lanmp && ./install.sh
+
+	通过Git安装稳定版 （推荐）
+
+	yum -y install screen git  #Redhat/CentOS
+	apt-get -y install screen git-core git-gui  #Debian/Ubuntu
 	screen -S lanmp
 	git clone https://github.com/wangyan/lanmp.git
 	cd lanmp && ./install.sh
 
-虚拟主机管理
+2.	安装开发版
+
+	yum -y install screen  #Redhat/CentOS
+	apt-get -y install screen  #Debian/Ubuntu
+	screen -S lanmp
+	wget -c http://wangyan.org/download/lanmp/lanmp-dev-latest.tar.gz
+	cd lanmp && ./install.sh
+
+	通过Git安装开发版 （推荐）
+
+	yum -y install screen git  #Redhat/CentOS
+	apt-get -y install screen git-core git-gui  #Debian/Ubuntu
+	screen -S lanmp
+	git clone https://github.com/wangyan/lanmp.git
+	cd lanmp
+	git checkout develop
+	./install.sh
+
+3.	虚拟主机管理
 
 	cd lanmp/
 	./vhost_add.sh #添加
 	./vhost_del.sh #删除
+
+4.	自动升级
+
+	cd lanmp/
+	./upgrade.sh
 
 ## 四、注意事项
 
