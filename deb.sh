@@ -7,7 +7,7 @@ echo "#############################################################"
 echo "# Linux + Apache + Nginx + MySQL + PHP Auto Install Script"
 echo "# Env: Debian/Ubuntu"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Version: 0.2.9.22.68"
+echo "# Version: 0.2.9.22.69"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -1046,9 +1046,10 @@ echo "================phpMyAdmin Install==============="
 
 cd $LANMP_PATH
 
+PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv 'rc' | tail -1`
+
 if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
 	PMA_LINK="http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/"
-	PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv 'rc' | tail -1`
 	LATEST_PMA_LINK="${PMA_LINK}${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 	BACKUP_PMA_LINK="http://wangyan.org/download/lanmp-src/phpMyAdmin-latest-all-languages.tar.gz"
 	Extract ${LATEST_PMA_LINK} ${BACKUP_PMA_LINK}
