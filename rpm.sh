@@ -784,14 +784,19 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/g' /usr/local/php/l
 sed -i 's#;date.timezone =#date.timezone = Asia/Shanghai#g' /usr/local/php/lib/php.ini
 sed -i 's#;sendmail_path =#sendmail_path = /usr/sbin/sendmail -t -i#g' /usr/local/php/lib/php.ini
 
-if [ "$SOFTWARE" = "1" ]; then
+if [[ "$SOFTWARE" = "1" && "$PHP_VER" = "1" ]]; then
 	cp conf/init.d.php-fpm /etc/init.d/php-fpm
 	chmod 755 /etc/init.d/php-fpm
 	update-rc.d -f php-fpm defaults
-
-	cp conf/php-fpm.conf /usr/local/php/etc/php-fpm.conf
+	cp conf/php-fpm-p2.conf /usr/local/php/etc/php-fpm.conf
 	/etc/init.d/php-fpm start
-else
+elif [[ "$SOFTWARE" = "1" && "$PHP_VER" = "2" ]]; then
+	cp php-5.4.*/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+	chmod 755 /etc/init.d/php-fpm
+	update-rc.d -f php-fpm defaults
+	cp conf/php-fpm-p4.conf /usr/local/php/etc/php-fpm.conf
+	/etc/init.d/php-fpm start
+elif [ "$SOFTWARE" != "1" ]; then
 	/etc/init.d/httpd start
 fi
 
@@ -814,8 +819,9 @@ if [ "$INSTALL_XC" = "y" ];then
 	./configure --enable-xcache --enable-xcache-optimizer --enable-xcache-coverager
 	make && make install
 
-	cp -r admin/ /var/www/xcache
-	chmod -R 755 /var/www/xcache
+	mkdir -p $WEBROOT/
+	cp -r admin/ $WEBROOT/xcache
+	chmod -R 755 $WEBROOT/xcache
 
 	mkdir /tmp/{pcov,phpcore}
 	chown www:www /tmp/{pcov,phpcore}
@@ -1075,8 +1081,8 @@ if [ "$SOFTWARE" != "2" ]; then
 
 	if [ ! -d $WEBROOT ]; then
 		mkdir -p $WEBROOT
-		cp conf/p.php $WEBROOT
 	fi
+	\cp conf/p.php $WEBROOT
 
 	cp conf/init.d.nginx /etc/init.d/nginx
 	chmod 755 /etc/init.d/nginx
