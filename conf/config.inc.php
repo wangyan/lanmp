@@ -38,7 +38,6 @@ $cfg['Servers'][$i]['userconfig'] = 'pma_userconfig';
 /* End of servers configuration */
 
 $cfg['blowfish_secret'] = '4d511fa76e73b0.20642476';
-$cfg['LoginCookieValidity'] = 3600;
 $cfg['UploadDir'] = '';
 $cfg['SaveDir'] = '';
 $cfg['AllowAnywhereRecoding'] = true;

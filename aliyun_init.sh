@@ -29,16 +29,6 @@ elif [ "$DISTRIBUTION" = "centos" ];then
 	yum makecache
 	/etc/init.d/iptables stop
 	chkconfig iptables off
-elif [ "$DISTRIBUTION" = "debian" ];then
-	mv /etc/apt/sources.list /etc/apt/sources.list.bak
-	wget -c http://wangyan.org/download/conf/sources.list.squeeze
-	mv sources.list.squeeze /etc/apt/sources.list
-	apt-get -y update
-elif [ "$DISTRIBUTION" = "ubuntu" ];then
-	mv /etc/apt/sources.list /etc/apt/sources.list.bak
-	wget -c http://wangyan.org/download/conf/sources.list.maverick
-	mv sources.list.maverick /etc/apt/sources.list
-	apt-get -y update
 fi
 
 echo "---------- Set the sysctl ----------"

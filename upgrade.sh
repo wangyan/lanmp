@@ -56,7 +56,7 @@ echo -e "Latest version of PHP: \033[41;37m $LATEST_PHP \033[0m"
 echo -e "Installed version of PHP: \033[41;37m $INSTALLED_PHP \033[0m"
 echo ""
 
-if [[ "$INSTALLED_PHP" != "2.7" && "$(awk 'BEGIN{print('$LATEST_PHP'>'$INSTALLED_PHP')}')" = "1" ]];then
+if [[ "$INSTALLED_PHP" != "5.2.17p1" && "$(awk 'BEGIN{print('$LATEST_PHP'>'$INSTALLED_PHP')}')" = "1" ]];then
 	echo "Do you want to upgrade PHP ? (y/n)"
 	read -p "(Default: y):" UPGRADE_PHP
 	if [ -z $UPGRADE_PHP ]; then
