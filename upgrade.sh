@@ -2,12 +2,25 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export PATH
 
+if [ $(id -u) != "0" ]; then
+	printf "Error: You must be root to run this script!"
+	exit 1
+fi
+
+LANMP_PATH=`pwd`
+if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
+	clear && echo "Please enter lanmp script path:"
+	read -p "(Default path: ${LANMP_PATH}/lanmp):" LANMP_PATH
+	[ -z "$LANMP_PATH" ] && LANMP_PATH=$(pwd)/lanmp
+	cd $LANMP_PATH/
+fi
+
 clear
 echo "#############################################################"
 echo "# LANMP Auto Update Script"
 echo "# Env: Redhat/CentOS"
 echo "# Intro: https://wangyan.org/blog/lanmp.html"
-echo "# Version: 0.2.9.12.62"
+echo "# Version: $(awk '/version/{print $2}' $LANMP_PATH/Changelog)"
 echo "#"
 echo "# Copyright (c) 2012, WangYan <WangYan@188.com>"
 echo "# All rights reserved."
@@ -15,17 +28,6 @@ echo "# Distributed under the GNU General Public License, version 3.0."
 echo "#"
 echo "#############################################################"
 echo ""
-
-LANMP_PATH=`pwd`
-if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
-	echo "Please enter lanmp script path:"
-	read -p "(Default path: /root/lanmp):" LANMP_PATH
-	[ -z "$LANMP_PATH" ] && LANMP_PATH="/root/lanmp"
-	echo "---------------------------"
-	echo "lanmp path = $LANMP_PATH"
-	echo "---------------------------"
-	echo ""
-fi
 
 echo "Please enter the webroot dir:"
 read -p "(Default webroot dir: /var/www):" WEBROOT

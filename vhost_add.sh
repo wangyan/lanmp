@@ -7,25 +7,22 @@ if [ $(id -u) != "0" ]; then
 	exit 1
 fi
 
+LANMP_PATH=`pwd`
+if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
+	clear && echo "Please enter lanmp script path:"
+	read -p "(Default path: ${LANMP_PATH}/lanmp):" LANMP_PATH
+	[ -z "$LANMP_PATH" ] && LANMP_PATH=$(pwd)/lanmp
+	cd $LANMP_PATH/
+fi
+
 clear
 echo "#############################################################"
 echo "# Add Virtual Host for LANMP"
 echo "# Env: Debian/Ubuntu/Redhat/CentOS"
 echo "# Author: https://wangyan.org/"
-echo "# Last modified: 2012.07.20"
+echo "# Version: $(awk '/version/{print $2}' $LANMP_PATH/Changelog)"
 echo "#############################################################"
 echo ""
-
-LANMP_PATH=`pwd`
-if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
-	echo "Please enter lanmp script path:"
-	read -p "(Default path: /root/lanmp):" LANMP_PATH
-	[ -z "$LANMP_PATH" ] && LANMP_PATH="/root/lanmp"
-	echo "---------------------------"
-	echo "lanmp path = $LANMP_PATH"
-	echo "---------------------------"
-	echo ""
-fi
 
 echo "Please enter account name:"
 read -p "(Default vhost account: example):" VHOST_ACCOUNT

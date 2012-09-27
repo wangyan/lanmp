@@ -2,6 +2,11 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export PATH
 
+if [ $(id -u) != "0" ]; then
+	printf "Error: You must be root to run this script!"
+	exit 1
+fi
+
 LANMP_PATH=`pwd`
 if [ `echo $LANMP_PATH | awk -F/ '{print $NF}'` != "lanmp" ]; then
 	clear && echo "Please enter lanmp script path:"
