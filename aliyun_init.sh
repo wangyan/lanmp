@@ -8,10 +8,6 @@ if cat /proc/version | grep -qi redhat;then
 	DISTRIBUTION="redhat"
 elif cat /proc/version | grep -qi centos;then
 	DISTRIBUTION="centos"
-elif cat /proc/version | grep -qi debian;then
-	DISTRIBUTION="debian"
-elif cat /proc/version | grep -qi ubuntu;then
-	DISTRIBUTION="ubuntu"
 else
 	exit 0
 fi
@@ -19,8 +15,11 @@ fi
 echo "---------- Set the software repos ----------"
 
 if [ "$DISTRIBUTION" = "redhat" ];then
+	sed -i 's#\[main\]#\[main\]\nmultilib_policy=best#g' /etc/yum.conf
 	mv /etc/yum.repos.d/rhel-debuginfo.repo /etc/yum.repos.d/rhel-debuginfo.repo.bak
-	wget -c http://wangyan.org/download/conf/rhel-debuginfo.repo -P /etc/yum.repos.d/
+	wget -c http://mirrors.163.com/.help/CentOS5-Base-163.repo -P /etc/yum.repos.d/
+	sed -i 's/$releasever/5/g' /etc/yum.repos.d/CentOS5-Base-163.repo
+	sed -i 's/$basearch/x86_64/g' /etc/yum.repos.d/CentOS5-Base-163.repo
 	yum makecache
 	/etc/init.d/iptables stop
 	chkconfig iptables off

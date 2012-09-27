@@ -233,7 +233,6 @@ apt-get -y install libxml2 libxml2-dev
 apt-get -y install libmhash2 libmhash-dev
 apt-get -y install curl libcurl3 libcurl4-openssl-dev
 apt-get -y install libxmlrpc-core-c3 libxmlrpc-core-c3-dev
-apt-get -y install libkrb53 libkrb5-dev
 apt-get -y install libevent-dev libevent-2.0-5
 apt-get -y install libncurses5 libncurses5-dev
 apt-get -y install libltdl7 libltdl-dev
@@ -728,21 +727,6 @@ cd ext/pdo_mysql/
 ./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
 make && make install
 
-echo "---------- Imap Extension ----------"
-
-mkdir /usr/kerberos/
-if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
-	ln -s /usr/lib/x86_64-linux-gnu/ /usr/kerberos/lib
-	ln -s /usr/lib64/x86_64-linux-gnu/ /usr/kerberos/lib64
-else
-	ln -s /usr/lib/i386-linux-gnu/ /usr/kerberos/lib
-fi
-
-cd ../imap/
-/usr/local/php/bin/phpize
-./configure --with-php-config=/usr/local/php/bin/php-config  --with-kerberos --with-imap-ssl
-make && make install
-
 echo "---------- Memcache Extension ----------"
 
 cd $LANMP_PATH/
@@ -768,10 +752,10 @@ for i in `ls /usr/local/php/bin`; do ln -s /usr/local/php/bin/$i /usr/bin/$i; do
 
 if [ "$PHP_VER" = "1" ];then
 	cp php-*/php.ini-recommended /usr/local/php/lib/php.ini
-	sed -i 's#extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\nextension = "imap.so"\n#g' /usr/local/php/lib/php.ini
+	sed -i 's#extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 else
 	cp php-*/php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\nextension = "imap.so"\n#g' /usr/local/php/lib/php.ini
+	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 fi
 
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
