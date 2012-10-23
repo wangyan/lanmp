@@ -60,6 +60,7 @@
 	screen -S lanmp
 	wget -c http://wangyan.org/download/lanmp/lanmp-latest.tar.gz #安装稳定版
 	wget -c http://wangyan.org/download/lanmp/lanmp-dev-latest.tar.gz #开发版（二选一）
+	tar -zxf lanmp-*.tar.gz 
 	cd lanmp && ./install.sh
 
 方法二：通过Git下载（推荐）
@@ -98,8 +99,8 @@
 
 ## 五、联系方式
 
-> Email: [WangYan@188.com](WangYan@188.com) （推荐）  
-> Gtalk: [myidwy@gmail.com](myidwy@gmail.com)  
+> Email: [WangYan#188.com](WangYan#188.com) （推荐）  
+> Gtalk: [myidwy#gmail.com](myidwy#gmail.com)  
 > Q Q群：[138082163](http://qun.qq.com/#jointhegroup/gid/138082163)  
 > Twitter：[@wang_yan](https://twitter.com/wang_yan)  
 > Home Page: [WangYan Blog](http://wangyan.org/blog)  
