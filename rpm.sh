@@ -366,7 +366,7 @@ if [ "$SOFTWARE" != "1" ]; then
 
 	cp conf/init.d.httpd /etc/init.d/httpd
 	chmod 755 /etc/init.d/httpd
-	update-rc.d -f httpd defaults
+	chkconfig httpd on
 
 	mv /usr/local/apache/conf/httpd.conf /usr/local/apache/conf/httpd.conf.old
 	cp conf/httpd.conf /usr/local/apache/conf/httpd.conf
@@ -777,13 +777,13 @@ sed -i 's#;sendmail_path =#sendmail_path = /usr/sbin/sendmail -t -i#g' /usr/loca
 if [[ "$SOFTWARE" = "1" && "$PHP_VER" = "1" ]]; then
 	cp conf/init.d.php-fpm /etc/init.d/php-fpm
 	chmod 755 /etc/init.d/php-fpm
-	update-rc.d -f php-fpm defaults
+	chkconfig php-fpm on
 	cp conf/php-fpm-p2.conf /usr/local/php/etc/php-fpm.conf
 	/etc/init.d/php-fpm start
 elif [[ "$SOFTWARE" = "1" && "$PHP_VER" = "2" ]]; then
 	cp php-5.4.*/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
 	chmod 755 /etc/init.d/php-fpm
-	update-rc.d -f php-fpm defaults
+	chkconfig php-fpm on
 	cp conf/php-fpm-p4.conf /usr/local/php/etc/php-fpm.conf
 	/etc/init.d/php-fpm start
 elif [ "$SOFTWARE" != "1" ]; then
@@ -1076,7 +1076,7 @@ if [ "$SOFTWARE" != "2" ]; then
 
 	cp conf/init.d.nginx /etc/init.d/nginx
 	chmod 755 /etc/init.d/nginx
-	update-rc.d -f nginx defaults
+	chkconfig nginx on
 
 	ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 	/etc/init.d/nginx restart
