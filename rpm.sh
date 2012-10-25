@@ -342,8 +342,6 @@ if [ "$SOFTWARE" != "1" ]; then
 	cd $LANMP_PATH/
 
 	if [ ! -s httpd-*.tar.gz ]; then
-#		LATEST_APACHE_LINK=`elinks http://www.apache.org/dist/httpd/ | awk '/http.+[0-9]\.tar\.gz$/{print $2}' | tail -1`
-#		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp-src/httpd-latest.tar.gz"
 		LATEST_APACHE_LINK="http://src-mirror.googlecode.com/files/httpd-2.2.22.tar.gz"
 		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp-src/httpd-2.2.22.tar.gz"
 		Extract ${LATEST_APACHE_LINK} ${BACKUP_APACHE_LINK}
@@ -433,7 +431,6 @@ if [ "$SOFTWARE" != "1" ]; then
 		echo "---------- RPAF Moudle ----------"
 
 		if [ ! -s mod_rpaf-*.tar.gz ]; then
-#			LATEST_RPAF_LINK="http://stderr.net/apache/rpaf/download/mod_rpaf-0.6.tar.gz"
 			LATEST_RPAF_LINK="http://src-mirror.googlecode.com/files/mod_rpaf-0.6.tar.gz"
 			BACKUP_RPAF_LINK="http://wangyan.org/download/lanmp-src/mod_rpaf-latest.tar.gz"
 			Extract ${LATEST_RPAF_LINK} ${BACKUP_RPAF_LINK}
@@ -476,7 +473,7 @@ echo "---------- libpng ----------"
 cd $LANMP_PATH/
 
 if [ ! -s libpng-*.tar.gz ]; then
-	LATEST_LIBPNG_LINK=`elinks ftp://ftp.simplesystems.org/pub/libpng/png/src/ | awk '/ftp:.+libpng-.+gz$/{print $2}' | tail -1`
+	LATEST_LIBPNG_LINK="http://src-mirror.googlecode.com/files/libpng-1.5.13.tar.gz"
 	BACKUP_LIBPNG_LINK="http://wangyan.org/download/lanmp-src/libpng-latest.tar.gz"
 	Extract ${LATEST_LIBPNG_LINK} ${BACKUP_LIBPNG_LINK}
 else
@@ -491,7 +488,7 @@ echo "---------- libjpeg ----------"
 cd $LANMP_PATH/
 
 if [ ! -s jpegsrc.*.tar.gz ]; then
-	LATEST_LIBJPEG_LINK=`elinks http://www.ijg.org/files/ | awk '/http.+jpegsrc.+$/{print $2}' | tail -1`
+	LATEST_LIBJPEG_LINK="http://src-mirror.googlecode.com/files/jpegsrc.v8d.tar.gz"
 	BACKUP_LIBJPEG_LINK="http://wangyan.org/download/lanmp-src/jpegsrc.latest.tar.gz"
 	Extract ${LATEST_LIBJPEG_LINK} ${BACKUP_LIBJPEG_LINK}
 else
@@ -506,7 +503,7 @@ echo "---------- libiconv ----------"
 cd $LANMP_PATH/
 
 if [ ! -s libiconv-*.tar.gz ]; then
-	LATEST_LIBICONV_LINK=`elinks http://ftp.gnu.org/pub/gnu/libiconv/ | awk '/http.+.gz$/{print $2}' | sort -n -k 4 -t . | tail -1`
+	LATEST_LIBICONV_LINK="http://src-mirror.googlecode.com/files/libiconv-1.14.tar.gz"
 	BACKUP_LIBICONV_LINK="http://wangyan.org/download/lanmp-src/libiconv-latest.tar.gz"
 	Extract ${LATEST_LIBICONV_LINK} ${LATEST_LIBICONV_LINK}
 else
@@ -521,7 +518,6 @@ echo "---------- libmcrypt ----------"
 cd $LANMP_PATH/
 
 if [ ! -s libmcrypt-*.tar.gz ]; then
-#	LATEST_LIBMCRYPT_LINK="http://nchc.dl.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 	LATEST_LIBMCRYPT_LINK="http://src-mirror.googlecode.com/files/libmcrypt-2.5.8.tar.gz"
 	BACKUP_LIBMCRYPT_LINK="http://wangyan.org/download/lanmp-src/libmcrypt-latest.tar.gz"
 	Extract ${LATEST_LIBMCRYPT_LINK} ${BACKUP_LIBMCRYPT_LINK}
@@ -537,7 +533,6 @@ echo "---------- mhash ----------"
 cd $LANMP_PATH/
 
 if [ ! -s mhash-*.tar.gz ]; then
-#	LATEST_MHASH_LINK="http://nchc.dl.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
 	LATEST_MHASH_LINK="http://src-mirror.googlecode.com/files/mhash-0.9.9.9.tar.gz"
 	BACKUP_MHASH_LINK="http://wangyan.org/download/lanmp-src/mhash-latest.tar.gz"
 	Extract ${LATEST_MHASH_LINK} ${BACKUP_MHASH_LINK}
@@ -553,7 +548,6 @@ echo "---------- mcrypt ----------"
 cd $LANMP_PATH/
 
 if [ ! -s mcrypt-*.tar.gz ]; then
-#	LATEST_MCRYPT_LINK="http://nchc.dl.sourceforge.net/project/mcrypt/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz"
 	LATEST_MCRYPT_LINK="http://src-mirror.googlecode.com/files/mcrypt-2.6.8.tar.gz"
 	BACKUP_MCRYPT_LINK="http://wangyan.org/download/lanmp-src/mcrypt-latest.tar.gz"
 	Extract ${LATEST_MCRYPT_LINK} ${BACKUP_MCRYPT_LINK}
@@ -573,29 +567,45 @@ useradd -g www -M -s /bin/false www
 
 if [ "$PHP_VER" = "1" ]; then
 	if [ ! -s php-5.2.17.tar.gz ]; then
-		wget -c http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz
+		wget -c -t3 -T3 http://src-mirror.googlecode.com/files/php-5.2.17.tar.gz
+		if [ $? != "0" ];then
+			rm -rf php-5.2.17.tar.gz
+			wget -c -t3 -T60 http://wangyan.org/download/lanmp-src/php-5.2.17.tar.gz
+		fi
 	fi
 	tar -zxf php-5.2.17.tar.gz
 
 	if [ ! -s php-5.2.17-fpm-0.5.14.diff.gz ]; then
-		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-fpm-0.5.14.diff.gz
+		wget -c -t3 -T3 http://src-mirror.googlecode.com/files/php-5.2.17-fpm-0.5.14.diff.gz
+		if [ $? != "0" ];then
+			rm -rf php-5.2.17-fpm-0.5.14.diff.gz
+			wget -c -t3 -T60 http://wangyan.org/download/lanmp-src/php-5.2.17-fpm-0.5.14.diff.gz
+		fi
 	fi
 	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
 
 	if [ ! -s php-5.2.17-max-input-vars.patch ]; then
-		wget -c http://src-mirror.googlecode.com/files/php-5.2.17-max-input-vars.patch
+		wget -c -t3 -T3 http://src-mirror.googlecode.com/files/php-5.2.17-max-input-vars.patch
+		if [ $? != "0" ];then
+			rm -rf php-5.2.17-max-input-vars.patch
+			wget -c -t3 -T60 http://wangyan.org/download/lanmp-src/php-5.2.17-max-input-vars.patch
+		fi
 	fi
 	patch -d php-5.2.17 -p1 < php-5.2.17-max-input-vars.patch
 
 	if [ ! -s debian_patches_disable_SSLv2_for_openssl_1_0_0.patch ]; then
-		wget -c http://src-mirror.googlecode.com/files/debian_patches_disable_SSLv2_for_openssl_1_0_0.patch
+		wget -c -t3 -T3 http://src-mirror.googlecode.com/files/debian_patches_disable_SSLv2_for_openssl_1_0_0.patch
+		if [ $? != "0" ];then
+			rm -rf debian_patches_disable_SSLv2_for_openssl_1_0_0.patch
+			wget -c -t3 -T60 http://wangyan.org/download/lanmp-src/debian_patches_disable_SSLv2_for_openssl_1_0_0.patch
+		fi
 	fi
 	patch -d php-5.2.17/ext/openssl/ -p3 < debian_patches_disable_SSLv2_for_openssl_1_0_0.patch
 	cd php-5.2.17/
 else
 	if [ ! -s php-5.4.*.tar.gz ]; then
 		LATEST_PHP_VERSION=`curl -s http://www.php.net/downloads.php | awk '/Current stable/{print $3}'`
-		LATEST_PHP_LINK="http://us.php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
+		LATEST_PHP_LINK="http://www.php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp-src/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
@@ -738,7 +748,6 @@ echo "---------- Memcache Extension ----------"
 cd $LANMP_PATH/
 
 if [ ! -s memcache-*.tgz ]; then
-#	LATEST_MEMCACHE_LINK="http://pecl.php.net/get/memcache-2.2.6.tgz"
 	LATEST_MEMCACHE_LINK="http://src-mirror.googlecode.com/files/memcache-2.2.6.tgz"
 	BACKUP_MEMCACHE_LINK="http://wangyan.org/download/lanmp-src/memcache-latest.tgz"
 	Extract ${LATEST_MEMCACHE_LINK} ${BACKUP_MEMCACHE_LINK}
@@ -797,7 +806,6 @@ cd $LANMP_PATH/
 if [ "$INSTALL_XC" = "y" ];then
 
 	if [ ! -s xcache-*.tar.gz ]; then
-#		LATEST_XCACHE_LINK="http://xcache.lighttpd.net/pub/Releases/2.0.1/xcache-2.0.1.tar.gz"
 		LATEST_XCACHE_LINK="http://src-mirror.googlecode.com/files/xcache-2.0.1.tar.gz"
 		BACKUP_XCACHE_LINK="http://wangyan.org/download/lanmp-src/xcache-latest.tar.gz"
 		Extract ${LATEST_XCACHE_LINK} ${BACKUP_XCACHE_LINK}
@@ -871,7 +879,6 @@ cd $LANMP_PATH
 if [ "$INSTALL_IONCUBE" = "y" ];then
 	if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
 		if [ ! -s ioncube_loaders_lin_x86-64.tar.gz ]; then
-#			LATEST_IONCUBE_LINK="http://downloads2.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz"
 			LATEST_IONCUBE_LINK="http://src-mirror.googlecode.com/files/ioncube_loaders_lin_x86-64.tar.gz"
 			BACKUP_IONCUBE_LINK="http://wangyan.org/download/lanmp-src/ioncube_loaders_lin_x86-64.tar.gz"
 			Extract ${LATEST_IONCUBE_LINK} ${BACKUP_IONCUBE_LINK}
@@ -881,7 +888,6 @@ if [ "$INSTALL_IONCUBE" = "y" ];then
 		fi
 	else
 		if [ ! -s ioncube_loaders_lin_x86.tar.gz ]; then
-#			LATEST_IONCUBE_LINK="http://downloads2.ioncube.com/loader_downloads/ioncube_loaders_lin_x86.tar.gz"
 			LATEST_IONCUBE_LINK="http://src-mirror.googlecode.com/files/ioncube_loaders_lin_x86.tar.gz"
 			BACKUP_IONCUBE_LINK="http://wangyan.org/download/lanmp-src/ioncube_loaders_lin_x86.tar.gz"
 			Extract ${LATEST_IONCUBE_LINK} ${BACKUP_IONCUBE_LINK}
@@ -916,7 +922,6 @@ if [ "$INSTALL_ZEND" = "y" ];then
 	if [ "$PHP_VER" = "1" ]; then
 		if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
 			if [ ! -s ZendOptimizer-*-linux-glibc23-x86_64.tar.gz ]; then
-#				LATEST_ZEND_LINK="http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz"
 				LATEST_ZEND_LINK="http://src-mirror.googlecode.com/files/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz"
 				BACKUP_ZEND_LINK="http://wangyan.org/download/lanmp-src/ZendOptimizer-latest-linux-glibc23-x86_64.tar.gz"
 				Extract ${LATEST_ZEND_LINK} ${BACKUP_ZEND_LINK}
@@ -926,7 +931,6 @@ if [ "$INSTALL_ZEND" = "y" ];then
 			fi
 		else
 			if [ ! -s ZendOptimizer-*-linux-glibc23-i386.tar.gz ]; then
-#				LATEST_ZEND_LINK="http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz"
 				LATEST_ZEND_LINK="http://src-mirror.googlecode.com/files/ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz"
 				BACKUP_ZEND_LINK="http://wangyan.org/download/lanmp-src/ZendOptimizer-latest-linux-glibc23-i386.tar.gz"
 				Extract ${LATEST_ZEND_LINK} ${BACKUP_ZEND_LINK}
@@ -946,7 +950,6 @@ if [ "$INSTALL_ZEND" = "y" ];then
 	else
 		if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
 			if [ ! -s ZendGuardLoader-php-*-linux-glibc23-x86_64.tar.gz ]; then
-#				LATEST_GUARD_LINK="http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz"
 				LATEST_GUARD_LINK="http://src-mirror.googlecode.com/files/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz"
 				BACKUP_GUARD_LINK="http://wangyan.org/download/lanmp-src/ZendGuardLoader-php-latest-linux-glibc23-x86_64.tar.gz"
 				Extract ${LATEST_GUARD_LINK} ${BACKUP_GUARD_LINK}
@@ -956,7 +959,6 @@ if [ "$INSTALL_ZEND" = "y" ];then
 			fi
 		else
 			if [ ! -s ZendGuardLoader-php-*-linux-glibc23-i386.tar.gz ]; then
-#				LATEST_GUARD_LINK="http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-i386.tar.gz"
 				LATEST_GUARD_LINK="http://src-mirror.googlecode.com/files/ZendGuardLoader-php-5.3-linux-glibc23-i386.tar.gz"
 				BACKUP_GUARD_LINK="http://wangyan.org/download/lanmp-src/ZendGuardLoader-php-latest-linux-glibc23-i386.tar.gz"
 				Extract ${LATEST_GUARD_LINK} ${BACKUP_GUARD_LINK}
@@ -994,7 +996,7 @@ if [ "$SOFTWARE" != "2" ]; then
 	cd $LANMP_PATH/
 
 	if [ ! -s pcre-*.tar.gz ]; then
-		LATEST_PCRE_LINK=`elinks ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/ | awk '/ftp:.+gz$/{print $2}' | tail -1`
+		LATEST_PCRE_LINK="http://src-mirror.googlecode.com/files/pcre-8.31.tar.gz"
 		BACKUP_PCRE_LINK="http://wangyan.org/download/lanmp-src/pcre-latest.tar.gz"
 		Extract ${LATEST_PCRE_LINK} ${BACKUP_PCRE_LINK}
 	else
@@ -1082,6 +1084,8 @@ if [ "$SOFTWARE" != "2" ]; then
 	/etc/init.d/nginx restart
 	/etc/init.d/nginx restart
 fi
+
+echo "================phpMyAdmin Install==============="
 
 cd $LANMP_PATH/
 PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv 'rc' | tail -1`
