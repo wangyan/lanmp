@@ -68,15 +68,6 @@ if [[ "$INSTALLED_PHP" != "5.2.17p1" && "$(awk 'BEGIN{print('$LATEST_PHP'>'$INST
 	echo "You choose = $UPGRADE_PHP"
 	echo "---------------------------"
 	echo ""
-	echo "Do you want to upgrade xCache ? (y/n)"
-	read -p "(Default: y):" UPGRADE_XC
-	if [ -z $UPGRADE_XC ]; then
-		UPGRADE_XC="y"
-	fi
-	echo "---------------------------"
-	echo "You choose = $UPGRADE_XC"
-	echo "---------------------------"
-	echo ""
 fi
 
 ######################### Nginx #########################
@@ -200,6 +191,7 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 	if [ "$SOFTWARE" != "1" ]; then
 		./configure \
 		--prefix=/usr/local/php \
+		--with-apxs2=/usr/local/apache/bin/apxs \
 		--with-curl \
 		--with-curlwrappers \
 		--with-freetype-dir \
@@ -219,12 +211,10 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 		--with-zlib \
 		--enable-bcmath \
 		--enable-calendar \
-		--enable-discard-path \
 		--enable-exif \
 		--enable-ftp \
 		--enable-gd-native-ttf \
 		--enable-inline-optimization \
-		--enable-magic-quotes \
 		--enable-mbregex \
 		--enable-mbstring \
 		--enable-shmop \
@@ -233,7 +223,6 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 		--enable-sysvsem \
 		--enable-sysvshm \
 		--enable-xml \
-		--enable-zend-multibyte \
 		--enable-zip
 	else
 		./configure \
@@ -250,7 +239,6 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 		--with-mhash \
 		--with-mysql=/usr/local/mysql \
 		--with-mysqli=/usr/local/mysql/bin/mysql_config \
-		--with-mime-magic \
 		--with-openssl \
 		--with-pear \
 		--with-png-dir \
@@ -258,15 +246,11 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 		--with-zlib \
 		--enable-bcmath \
 		--enable-calendar \
-		--enable-discard-path \
 		--enable-exif \
-		--enable-fastcgi \
-		--enable-force-cgi-redirect \
 		--enable-fpm \
 		--enable-ftp \
 		--enable-gd-native-ttf \
 		--enable-inline-optimization \
-		--enable-magic-quotes \
 		--enable-mbregex \
 		--enable-mbstring \
 		--enable-pcntl \
@@ -276,72 +260,28 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 		--enable-sysvsem \
 		--enable-sysvshm \
 		--enable-xml \
-		--enable-zend-multibyte \
 		--enable-zip
 	fi
 
 	make ZEND_EXTRA_LIBS='-liconv'
 	make install
 
-	echo "---------- PDO MYSQL Extension ----------"
-
-	cd ext/pdo_mysql/
-	/usr/local/php/bin/phpize
-	./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
-	make && make install
-
-	echo "---------- Imap Extension ----------"
-
-	cd ../imap/
-	/usr/local/php/bin/phpize
-	./configure --with-php-config=/usr/local/php/bin/php-config  --with-kerberos --with-imap-ssl
-	make && make install
-
-	echo "---------- Memcache Extension ----------"
-
-	cd $LANMP_PATH	
-
-	if [ ! -s memcache-*.tgz ]; then
-		LATEST_MEMCACHE_LINK="http://src-mirror.googlecode.com/files/memcache-2.2.6.tgz"
-		BACKUP_MEMCACHE_LINK="http://wangyan.org/download/lanmp/memcache-latest.tgz"
-		Extract ${LATEST_MEMCACHE_LINK} ${BACKUP_MEMCACHE_LINK}
-	else
-		tar -zxf memcache-*.tgz
-		cd memcache-*/
-	fi
-	/usr/local/php/bin/phpize
-	./configure --with-php-config=/usr/local/php/bin/php-config --with-zlib-dir --enable-memcache
-	make && make install
-
-	echo "---------- Xcache Extension ----------"
-
-	if [ "$UPGRADE_XC" = "y" ];then
-
-		cd $LANMP_PATH	
-
-		if [ ! -s xcache-*.tar.gz ]; then
-			LATEST_XCACHE_LINK="http://src-mirror.googlecode.com/files/xcache-2.0.1.tar.gz"
-			BACKUP_XCACHE_LINK="http://wangyan.org/download/lanmp/xcache-latest.tar.gz"
-			Extract ${LATEST_XCACHE_LINK} ${BACKUP_XCACHE_LINK}
-		else
-			tar zxf xcache-*.tar.gz
-			cd xcache-*/
-		fi
-		/usr/local/php/bin/phpize
-		./configure --enable-xcache --enable-xcache-optimizer --enable-xcache-coverager
-		make && make install
-	fi
+	echo "---------- PHP Extension ----------"
+	
+	mkdir -p /usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/
+	cp /usr/local/php.bak/lib/php/extensions/no-debug-non-zts-20100525/* /usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/
 
 	echo "---------- PHP Config ----------"
 
 	cp /usr/local/php.bak/lib/php.ini /usr/local/php/lib/php.ini
 
 	if [ "$SOFTWARE" != "1" ]; then
-		/etc/init.d/httpd restart
-		/etc/init.d/httpd restart
+		pkill httpd
+		/etc/init.d/httpd start
 	else
-		/etc/init.d/php-fpm restart
-		/etc/init.d/php-fpm restart
+		cp /usr/local/php.bak/etc/php-fpm.conf /usr/local/php/etc/php-fpm.conf
+		pkill php-fpm
+		/etc/init.d/php-fpm start
 	fi
 
 	rm -rf $LANMP_PATH/src/{php-*,memcache-*,xcache-*}
