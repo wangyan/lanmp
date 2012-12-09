@@ -604,8 +604,8 @@ if [ "$PHP_VER" = "1" ]; then
 	cd php-5.2.17/
 else
 	if [ ! -s php-5.4.*.tar.gz ]; then
-		LATEST_PHP_VERSION=`curl -s http://www.php.net/downloads.php | awk '/Current stable/{print $3}'`
-		LATEST_PHP_LINK="http://www.php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
+		LATEST_PHP_VERSION=`curl -s http://php.net/downloads.php | awk '/Current stable/{print $3}'`
+		LATEST_PHP_LINK="http://php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp-src/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
