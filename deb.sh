@@ -292,7 +292,7 @@ groupadd mysql
 useradd -g mysql -s /bin/false mysql
 
 if [ ! -s mysql-*.tar.gz ]; then
-	LATEST_MYSQL_LINK=`elinks ftp://mirror.csclub.uwaterloo.ca/mysql/Downloads/MySQL-5.5/ | awk '/ftp:.+\.[0-9][0-9][a-z]?\.tar\.gz$/{print $2}' | tail -n 1`
+	LATEST_MYSQL_LINK=`elinks ftp://mirror.csclub.uwaterloo.ca/mysql/Downloads/MySQL-5.6/ | awk '/ftp:.+\.[0-9][0-9][a-z]?\.tar\.gz$/{print $2}' | tail -n 1`
 	BACKUP_MYSQL_LINK='http://wangyan.org/download/lanmp-src/mysql-latest.tar.gz'
 	Extract ${LATEST_MYSQL_LINK} ${BACKUP_MYSQL_LINK}
 else

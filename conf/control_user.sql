@@ -7,7 +7,6 @@ GRANT SELECT (
     Execute_priv, Repl_slave_priv, Repl_client_priv
     ) ON mysql.user TO 'pma'@'localhost';
 GRANT SELECT ON mysql.db TO 'pma'@'localhost';
-GRANT SELECT ON mysql.host TO 'pma'@'localhost';
 GRANT SELECT (Host, Db, User, Table_name, Table_priv, Column_priv)
     ON mysql.tables_priv TO 'pma'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO 'pma'@'localhost';
