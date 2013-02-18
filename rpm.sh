@@ -90,25 +90,15 @@ echo "PHP Version = $PHP_VER"
 echo "---------------------------"
 echo ""
 
-ping -c 1 42.121.87.254 > $LANMP_PATH/aliyun.txt
-
-if grep -iqw ttl $LANMP_PATH/aliyun.txt; then
-	IS_ALIYUN="1"
-else
-	IS_ALIYUN="0"
+echo "Do you want to initialize aliyun ? (y/n)"
+read -p "(Default: n):" INIT_ALIYUN
+if [ -z $INIT_ALIYUN ]; then
+	INIT_ALIYUN="n"
 fi
-
-if [ "$IS_ALIYUN" = "1" ]; then
-	echo "Do you want to initialize aliyun ? (y/n)"
-	read -p "(Default: n):" INIT_ALIYUN
-	if [ -z $INIT_ALIYUN ]; then
-		INIT_ALIYUN="n"
-	fi
-	echo "---------------------------"
-	echo "You choose = $INIT_ALIYUN"
-	echo "---------------------------"
-	echo ""
-fi
+echo "---------------------------"
+echo "You choose = $INIT_ALIYUN"
+echo "---------------------------"
+echo ""
 
 echo "Do you want to install xCache ? (y/n)"
 read -p "(Default: y):" INSTALL_XC
@@ -167,9 +157,6 @@ fi
 
 echo "---------- Remove Packages ----------"
 
-rpm -e httpd
-rpm -e mysql
-rpm -e php
 yum -y remove httpd
 yum -y remove mysql
 yum -y remove php
