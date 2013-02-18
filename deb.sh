@@ -230,19 +230,23 @@ fi
 echo "---------- Dependent Packages ----------"
 
 apt-get update
-apt-get -y install make cmake autoconf2.13 gcc g++ libtool build-essential
-apt-get -y install wget elinks bison
-apt-get -y install openssl libssl0.9 libssl-dev libsasl2-2 libsasl2-dev
-apt-get -y install zlibc zlib1g zlib1g-dev
-apt-get -y install libfreetype6 libfreetype6-dev
-apt-get -y install libxml2 libxml2-dev
-apt-get -y install libmhash2 libmhash-dev
-apt-get -y install curl libcurl3 libcurl4-openssl-dev
-apt-get -y install libxmlrpc-core-c3 libxmlrpc-core-c3-dev
-apt-get -y install libevent-dev libevent-2.0-5
-apt-get -y install libncurses5 libncurses5-dev
-apt-get -y install libltdl7 libltdl-dev
-apt-get -y install libc-client2007e libc-client2007e-dev
+apt-get -y autoremove
+apt-get -fy install
+apt-get -y --force-yes install make cmake autoconf2.13 gcc g++ libtool build-essential
+apt-get -y --force-yes install wget elinks bison
+apt-get -y --force-yes install openssl libssl0.9 libssl-dev libsasl2-2 libsasl2-dev
+apt-get -y --force-yes install zlibc zlib1g zlib1g-dev
+apt-get -y --force-yes install libfreetype6 libfreetype6-dev
+apt-get -y --force-yes install libxml2 libxml2-dev
+apt-get -y --force-yes install libmhash2 libmhash-dev
+apt-get -y --force-yes install curl libcurl3 libcurl4-openssl-dev
+apt-get -y --force-yes install libxmlrpc-core-c3 libxmlrpc-core-c3-dev
+apt-get -y --force-yes install libevent-dev libevent-2.0-5
+apt-get -y --force-yes install libncurses5 libncurses5-dev
+apt-get -y --force-yes install libltdl7 libltdl-dev
+apt-get -y --force-yes install libc-client2007e libc-client2007e-dev
+apt-get -y autoremove
+apt-get -fy install
 
 ####################### Extract Function ########################
 
