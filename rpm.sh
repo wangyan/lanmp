@@ -145,8 +145,19 @@ echo "Or Ctrl+C cancel and exit ?"
 echo ""
 char=`get_char`
 
+echo "---------- Network Check ----------"
+
+ping -c 1 baidu.com &>/dev/null && PING=1 || PING=0
+
 if [ -d "$LANMP_PATH/src" ];then
 	\mv $LANMP_PATH/src/* $LANMP_PATH
+fi
+
+if [[ ! -s mysql-*.tar.gz && "$PING" = 0 ]];then
+	echo "Network Failed!"
+	exit
+else
+	echo "Network OK"
 fi
 
 echo "---------- Aliyun Initialize ----------"
@@ -173,7 +184,7 @@ rm -rf /etc/localtime
 ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 yum -y install ntp
-ntpdate -d cn.pool.ntp.org
+[ "$PING" = 1 ] && ntpdate -d cn.pool.ntp.org
 
 echo "---------- Disable SeLinux ----------"
 
