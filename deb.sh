@@ -1092,7 +1092,7 @@ fi
 echo "================phpMyAdmin Install==============="
 
 cd $LANMP_PATH/
-PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv 'rc' | tail -1`
+PMA_VERSION=`curl -s http://sourceforge.net/projects/phpmyadmin/files/| awk -F- '/phpMyAdmin-/{print $2}'|tail -1`
 
 if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
 	PMA_LINK="http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/"
