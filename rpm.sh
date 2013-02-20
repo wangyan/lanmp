@@ -232,7 +232,7 @@ fi
 echo "---------- Dependent Packages ----------"
 
 yum -y install make cmake autoconf autoconf213 gcc gcc-c++ libtool
-yum -y install wget elinks bison patch
+yum -y install wget elinks bison patch unzip tar
 yum -y install openssl openssl-devel
 yum -y install zlib zlib-devel
 yum -y install freetype freetype-devel
@@ -302,10 +302,10 @@ cmake . \
 -DDEFAULT_CHARSET=utf8 \
 -DDEFAULT_COLLATION=utf8_general_ci \
 -DWITH_READLINE=1 \
--DWITH_SSL=system \
--DWITH_ZLIB=system \
+-DWITH_SSL=yes \
 -DWITH_EMBEDDED_SERVER=1 \
--DENABLED_LOCAL_INFILE=1
+-DENABLED_LOCAL_INFILE=1 \
+-DENABLE_DOWNLOADS=0
 make install
 
 cd ../
@@ -1086,9 +1086,9 @@ fi
 echo "================phpMyAdmin Install==============="
 
 cd $LANMP_PATH/
-PMA_VERSION=`curl -s http://sourceforge.net/projects/phpmyadmin/files/| awk -F- '/phpMyAdmin-/{print $2}'|tail -1`
 
 if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
+	PMA_VERSION=`curl -s http://sourceforge.net/projects/phpmyadmin/files/| awk -F- '/phpMyAdmin-/{print $2}'|tail -1`
 	PMA_LINK="http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/"
 	LATEST_PMA_LINK="${PMA_LINK}${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 	BACKUP_PMA_LINK="http://wangyan.org/download/lanmp-src/phpMyAdmin-latest-all-languages.tar.gz"
@@ -1096,6 +1096,7 @@ if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
 	mkdir -p $WEBROOT/phpmyadmin
 	mv * $WEBROOT/phpmyadmin
 else
+	PMA_VERSION=`ls phpMyAdmin-*-all-languages.tar.gz | awk -F- '{print $2}'`
 	tar -zxf phpMyAdmin-*-all-languages.tar.gz -C $WEBROOT
 	mv $WEBROOT/phpMyAdmin-*-all-languages $WEBROOT/phpmyadmin
 fi
