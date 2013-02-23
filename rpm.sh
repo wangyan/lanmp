@@ -153,9 +153,9 @@ if [ -d "$LANMP_PATH/src" ];then
 	\mv $LANMP_PATH/src/* $LANMP_PATH
 fi
 
-if [[ ! -s mysql-*.tar.gz && "$PING" = 0 ]];then
+if [ "$PING" = 0 ];then
 	echo "Network Failed!"
-	exit
+	[ ! -s mysql-*.tar.gz ] && exit
 else
 	echo "Network OK"
 fi
@@ -301,18 +301,20 @@ cmake . \
 -DEXTRA_CHARSETS=all \
 -DDEFAULT_CHARSET=utf8 \
 -DDEFAULT_COLLATION=utf8_general_ci \
+-DWITH_MYISAM_STORAGE_ENGINE=1 \
+-DWITH_INNOBASE_STORAGE_ENGINE=1 \
+-DWITH_MEMORY_STORAGE_ENGINE=1 \
 -DWITH_READLINE=1 \
--DWITH_SSL=yes \
--DWITH_EMBEDDED_SERVER=1 \
 -DENABLED_LOCAL_INFILE=1 \
 -DENABLE_DOWNLOADS=0
 make install
 
-cd ../
-cp conf/my.cnf /etc/my.cnf
+#cd ../
+#cp conf/my.cnf /etc/my.cnf
+cp support-files/my-default.cnf /etc/my.cnf
 
 cd /usr/local/mysql
-scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql
+scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --explicit_defaults_for_timestamp
 chown -R root:root /usr/local/mysql/.
 chown -R mysql /usr/local/mysql/data
 
