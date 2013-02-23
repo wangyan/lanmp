@@ -1012,7 +1012,7 @@ if [ "$SOFTWARE" != "2" ]; then
 	mkdir -p /var/tmp/nginx
 	
 	if [ ! -s nginx-*.tar.gz ]; then
-		LATEST_NGINX_LINK=`elinks http://nginx.org/download/ | awk '/http.+gz$/{print $2}' | tail -1`
+		LATEST_NGINX_LINK=`curl -s http://nginx.org/| awk -F- '/nginx-/{print $6}' | head -1|cut -d '<' -f 1`
 		BACKUP_NGINX_LINK="http://wangyan.org/download/lanmp-src/nginx-latest.tar.gz"
 		Extract ${LATEST_NGINX_LINK} ${BACKUP_NGINX_LINK}
 	else
@@ -1090,7 +1090,7 @@ echo "================phpMyAdmin Install==============="
 cd $LANMP_PATH/
 
 if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
-	PMA_VERSION=`curl -s http://sourceforge.net/projects/phpmyadmin/files/| awk -F- '/phpMyAdmin-/{print $2}'|tail -1`
+	PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv '-' | tail -1`
 	PMA_LINK="http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/"
 	LATEST_PMA_LINK="${PMA_LINK}${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 	BACKUP_PMA_LINK="http://wangyan.org/download/lanmp-src/phpMyAdmin-latest-all-languages.tar.gz"

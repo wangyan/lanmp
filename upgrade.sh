@@ -58,11 +58,11 @@ echo -e "Latest version of PHP: \033[41;37m $LATEST_PHP \033[0m"
 echo -e "Installed version of PHP: \033[41;37m $INSTALLED_PHP \033[0m"
 echo ""
 
-if [[ "$INSTALLED_PHP" != "5.2.17p1" && "$(awk 'BEGIN{print('$LATEST_PHP'>'$INSTALLED_PHP')}')" = "1" ]];then
+if [ "$INSTALLED_PHP" != "5.2.17p1" ];then
 	echo "Do you want to upgrade PHP ? (y/n)"
-	read -p "(Default: y):" UPGRADE_PHP
+	read -p "(Default: n):" UPGRADE_PHP
 	if [ -z $UPGRADE_PHP ]; then
-		UPGRADE_PHP="y"
+		UPGRADE_PHP="n"
 	fi
 	echo "---------------------------"
 	echo "You choose = $UPGRADE_PHP"
@@ -74,23 +74,21 @@ fi
 
 if [ "$SOFTWARE" != 2 ];then
 	INSTALLED_NGINX=$(echo `nginx -v 2>&1` | cut -d '/' -f 2)
-	LATEST_NGINX=$(elinks http://nginx.org/download/ | awk -F"-" '/http.+gz$/{print $2}' | tail -1 | awk 'BEGIN{FS="[.]";OFS="."}{print $1,$2,$3}')	
+	LATEST_NGINX=$(curl -s http://nginx.org/| awk -F- '/nginx-/{print $6}' | head -1|cut -d '<' -f 1)
 
 	echo -e "Latest version of Nginx: \033[41;37m $LATEST_NGINX \033[0m"
 	echo -e "Installed version of Nginx: \033[41;37m $INSTALLED_NGINX \033[0m"
 	echo ""	
 
-	if [ "$(awk 'BEGIN{print('$LATEST_NGINX'>'$INSTALLED_NGINX')}')" = "1" ];then
-		echo "Do you want to upgrade Nginx ? (y/n)"
-		read -p "(Default: y):" UPGRADE_NGINX
-		if [ -z $UPGRADE_NGINX ]; then
-			UPGRADE_NGINX="y"
-		fi
-		echo "---------------------------"
-		echo "You choose = $UPGRADE_NGINX"
-		echo "---------------------------"
-		echo ""
+	echo "Do you want to upgrade Nginx ? (y/n)"
+	read -p "(Default: n):" UPGRADE_NGINX
+	if [ -z $UPGRADE_NGINX ]; then
+		UPGRADE_NGINX="n"
 	fi
+	echo "---------------------------"
+	echo "You choose = $UPGRADE_NGINX"
+	echo "---------------------------"
+	echo ""
 fi
 
 ######################### phpMyAdmin #########################
@@ -100,23 +98,22 @@ if [ ! -s "$LANMP_PATH/version.txt" ]; then
 fi
 
 INSTALLED_PMA=$(awk '/phpmyadmin/{print $2}' $LANMP_PATH/version.txt)
-LATEST_PMA=$(elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv 'rc' | tail -1)
+LATEST_PMA=$(elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv '-' | tail -1)
 
 echo -e "Latest version of phpmyadmin: \033[41;37m $LATEST_PMA \033[0m"
 echo -e "Installed version of phpmyadmin: \033[41;37m $INSTALLED_PMA \033[0m"
 echo ""
 
-if [ "$(awk 'BEGIN{print('$LATEST_PMA'>'$INSTALLED_PMA')}')" = "1" ];then
-	echo "Do you want to upgrade phpmyadmin ? (y/n)"
-	read -p "(Default: y):" UPGRADE_PMA
-	if [ -z $UPGRADE_PMA ]; then
-		UPGRADE_PMA="y"
-	fi
-	echo "---------------------------"
-	echo "You choose = $UPGRADE_PMA"
-	echo "---------------------------"
-	echo ""
+echo "Do you want to upgrade phpmyadmin ? (y/n)"
+read -p "(Default: n):" UPGRADE_PMA
+if [ -z $UPGRADE_PMA ]; then
+	UPGRADE_PMA="n"
 fi
+echo "---------------------------"
+echo "You choose = $UPGRADE_PMA"
+echo "---------------------------"
+echo ""
+
 
 get_char()
 {
@@ -294,7 +291,7 @@ if [[ "$UPGRADE_NGINX" = "y" || "$UPGRADE_NGINX" = "Y" ]];then
 	cd $LANMP_PATH
 	
 	if [ ! -s nginx-${LATEST_NGINX}.tar.gz ]; then
-		LATEST_NGINX_LINK=`elinks http://nginx.org/download/ | awk '/http.+gz$/{print $2}' | tail -1`
+		LATEST_NGINX_LINK="http://nginx.org/download/nginx-$LATEST_NGINX.tar.gz"
 		BACKUP_NGINX_LINK="http://wangyan.org/download/lanmp/nginx-latest.tar.gz"
 		Extract ${LATEST_NGINX_LINK} ${BACKUP_NGINX_LINK}
 	else
