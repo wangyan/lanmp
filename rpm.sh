@@ -342,8 +342,8 @@ if [ "$SOFTWARE" != "1" ]; then
 	cd $LANMP_PATH/
 
 	if [ ! -s httpd-*.tar.gz ]; then
-		LATEST_APACHE_LINK="http://src-mirror.googlecode.com/files/httpd-2.2.22.tar.gz"
-		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp-src/httpd-2.2.22.tar.gz"
+		LATEST_APACHE_LINK="http://src-mirror.googlecode.com/files/httpd-2.2.24.tar.gz"
+		BACKUP_APACHE_LINK="http://wangyan.org/download/lanmp-src/httpd-2.2.24.tar.gz"
 		Extract ${LATEST_APACHE_LINK} ${BACKUP_APACHE_LINK}
 	else
 		tar -zxf httpd-*.tar.gz
