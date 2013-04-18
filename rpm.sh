@@ -1012,7 +1012,8 @@ if [ "$SOFTWARE" != "2" ]; then
 	mkdir -p /var/tmp/nginx
 	
 	if [ ! -s nginx-*.tar.gz ]; then
-		LATEST_NGINX_LINK=`curl -s http://nginx.org/| awk -F- '/nginx-/{print $6}' | head -1|cut -d '<' -f 1`
+		LATEST_NGINX_VERSION=`curl -s http://nginx.org/| awk -F- '/nginx-/{print $6}' | head -1|cut -d '<' -f 1`
+		LATEST_NGINX_LINK="http://nginx.org/download/nginx-${LATEST_NGINX_VERSION}.tar.gz"
 		BACKUP_NGINX_LINK="http://wangyan.org/download/lanmp-src/nginx-latest.tar.gz"
 		Extract ${LATEST_NGINX_LINK} ${BACKUP_NGINX_LINK}
 	else
