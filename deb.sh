@@ -511,7 +511,7 @@ cd $LANMP_PATH/
 if [ ! -s libiconv-*.tar.gz ]; then
 	LATEST_LIBICONV_LINK="http://src-mirror.googlecode.com/files/libiconv-1.14.tar.gz"
 	BACKUP_LIBICONV_LINK="http://wangyan.org/download/lanmp-src/libiconv-latest.tar.gz"
-	Extract ${LATEST_LIBICONV_LINK} ${LATEST_LIBICONV_LINK}
+	Extract ${LATEST_LIBICONV_LINK} ${BACKUP_LIBICONV_LINK}
 else
 	tar -zxf libiconv-*.tar.gz
 	cd libiconv-*/
