@@ -812,7 +812,7 @@ cd $LANMP_PATH/
 if [ "$INSTALL_XC" = "y" ];then
 
 	if [ ! -s xcache-*.tar.gz ]; then
-		LATEST_XCACHE_LINK="http://src-mirror.googlecode.com/files/xcache-2.0.1.tar.gz"
+		LATEST_XCACHE_LINK="https://gitcafe.com/wangyan/files/raw/master/xcache-3.0.3.tar.gz"
 		BACKUP_XCACHE_LINK="http://wangyan.org/download/lanmp-src/xcache-latest.tar.gz"
 		Extract ${LATEST_XCACHE_LINK} ${BACKUP_XCACHE_LINK}
 	else
