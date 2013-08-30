@@ -895,7 +895,7 @@ echo "---------- Ioncube Extension ----------"
 
 cd $LANMP_PATH/
 
-if [ "$INSTALL_IONCUBE" = "y" ];then
+if [[ "$INSTALL_IONCUBE" = "y" && $PHP_VER = "1" ]];then
 	if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
 		if [ ! -s ioncube_loaders_lin_x86-64.tar.gz ]; then
 			LATEST_IONCUBE_LINK="https://gitcafe.com/wangyan/files/raw/master/ioncube_loaders_lin_x86-64.tar.gz"
@@ -1101,8 +1101,8 @@ if [ "$SOFTWARE" != "2" ]; then
 	update-rc.d -f nginx defaults
 
 	ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
-	/etc/init.d/nginx restart
-	/etc/init.d/nginx restart
+	/etc/init.d/nginx stop
+	/etc/init.d/nginx start
 fi
 
 echo "================phpMyAdmin Install==============="
