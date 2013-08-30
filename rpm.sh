@@ -803,7 +803,7 @@ echo "---------- Xcache Extension ----------"
 
 cd $LANMP_PATH/
 
-if [ "$INSTALL_XC" = "y" ];then
+if [[ "$INSTALL_XC" = "y" && $PHP_VER = "1" ]];then
 
 	if [ ! -s xcache-*.tar.gz ]; then
 		LATEST_XCACHE_LINK="https://gitcafe.com/wangyan/files/raw/master/xcache-3.0.3.tar.gz"
@@ -868,6 +868,19 @@ if [ "$INSTALL_XC" = "y" ];then
 	[xcache.coverager]
 	xcache.coverager = On
 	xcache.coveragedump_directory = /tmp/pcov
+
+	EOF
+elif [[ "$INSTALL_XC" = "y" && $PHP_VER = "2" ]]; then
+	cat >>/usr/local/php/lib/php.ini<<-EOF
+
+	[opcache]
+	zend_extension = /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/opcache.so
+	opcache.enable_cli=1
+	opcache.memory_consumption=128
+	opcache.interned_strings_buffer=8
+	opcache.max_accelerated_files=4000
+	opcache.revalidate_freq=1
+	opcache.fast_shutdown=1
 
 	EOF
 fi
