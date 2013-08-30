@@ -1135,18 +1135,12 @@ if [ -s $WEBROOT/phpmyadmin/scripts/create_tables.sql ]; then
 	cp $WEBROOT/phpmyadmin/scripts/create_tables.sql /tmp/create_tables.sql
 else
 	cp $WEBROOT/phpmyadmin/examples/create_tables.sql /tmp/create_tables.sql
+	sed -i 's/pma__/pma_/g' $WEBROOT/phpmyadmin/examples/create_tables.sql
 fi
 
-cat >>update_mysql.sh<<EOF
-create database phpmyadmin;
-use phpmyadmin;
-source /tmp/create_tables.sql;
-EOF
+/usr/local/mysql/bin/mysql -u root -p$MYSQL_ROOT_PWD -h localhost < $WEBROOT/phpmyadmin/examples/create_tables.sql
 
-cat update_mysql.sh | mysql -u root -p$MYSQL_ROOT_PWD
 rm -rf /usr/local/mysql/data/test/
-rm update_mysql.sh
-rm /tmp/create_tables.sql
 
 echo -e "phpmyadmin\t${PMA_VERSION}" >> version.txt 2>&1
 
