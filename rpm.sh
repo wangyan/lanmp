@@ -473,7 +473,7 @@ echo "---------- libpng ----------"
 cd $LANMP_PATH/
 
 if [ ! -s libpng-*.tar.gz ]; then
-	LATEST_LIBPNG_LINK="https://gitcafe.com/wangyan/files/raw/master/libpng-1.5.14.tar.gz"
+	LATEST_LIBPNG_LINK="https://gitcafe.com/wangyan/files/raw/master/libpng-1.6.3.tar.gz"
 	BACKUP_LIBPNG_LINK="http://wangyan.org/download/lanmp-src/libpng-latest.tar.gz"
 	Extract ${LATEST_LIBPNG_LINK} ${BACKUP_LIBPNG_LINK}
 else
@@ -770,7 +770,7 @@ if [ "$PHP_VER" = "1" ];then
 	sed -i 's#extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 else
 	cp php-*/php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
+	sed -i 's#; extension_dir = "./"#extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/"\nextension = "memcache.so"\nextension = "pdo_mysql.so"\n#g' /usr/local/php/lib/php.ini
 fi
 
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
@@ -833,7 +833,7 @@ if [ "$INSTALL_XC" = "y" ];then
 	else
 		cat >>/usr/local/php/lib/php.ini<<-EOF
 		[xcache-common]
-		zend_extension = /usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/xcache.so
+		zend_extension = /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/xcache.so
 		EOF
 	fi
 	cat >>/usr/local/php/lib/php.ini<<-EOF
