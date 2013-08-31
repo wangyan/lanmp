@@ -13,7 +13,7 @@
 /* 感谢以下朋友为探针做出的贡献:
 /* zyypp,酷を龙卷风,龙智超,菊花肿了,闲人,Clare Lou,hotsnow
 /* 二戒,yexinzhu,wangyu1314,Kokgog,gibyasus,黃子珅,A大,huli
-/* 小松,charwin
+/* 小松,charwin,华景网络
 /* 您可能是下一个?
 /* ---------------------------------------------------- */
 error_reporting(0); //抑制所有错误信息
@@ -22,7 +22,7 @@ ob_start();
 date_default_timezone_set('Asia/Shanghai');//此句用于消除时间差
 
 $title = '雅黑PHP探针[简体版]';
-$version = "v0.4.5"; //版本号
+$version = "v0.4.7"; //版本号
 
 define('HTTP_HOST', preg_replace('~^www\.~i', '', $_SERVER['HTTP_HOST']));
 
@@ -49,7 +49,7 @@ function formatsize($size)
 	$allsize=array();
 	$i=0;
 
-	for($i = 0; $i <4; $i++) 
+	for($i = 0; $i <5; $i++) 
 	{
 		if(floor($size/pow(1024,$i))==0){break;}
 	}
@@ -64,14 +64,6 @@ function formatsize($size)
 
 	for($j = $len-1; $j >=0; $j--) 
 	{
-		$strlen = 4-strlen($allsize[$j]);
-		if($strlen==1)
-			$allsize[$j] = "<font color='#FFFFFF'>0</font>".$allsize[$j];
-		elseif($strlen==2)
-			$allsize[$j] = "<font color='#FFFFFF'>00</font>".$allsize[$j];
-		elseif($strlen==3)
-			$allsize[$j] = "<font color='#FFFFFF'>000</font>".$allsize[$j];
-
 		$fsize=$fsize.$allsize[$j].$danwei[$j];
 	}	
 	return $fsize;
@@ -627,6 +619,8 @@ $strs = @file("/proc/net/dev");
 for ($i = 2; $i < count($strs); $i++ )
 {
 	preg_match_all( "/([^\s]+):[\s]{0,}(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/", $strs[$i], $info );
+	$NetOutSpeed[$i] = $info[10][0];
+	$NetInputSpeed[$i] = $info[2][0];
 	$NetInput[$i] = formatsize($info[2][0]);
 	$NetOut[$i]  = formatsize($info[10][0]);
 }
@@ -634,8 +628,9 @@ for ($i = 2; $i < count($strs); $i++ )
 //ajax调用实时刷新
 if ($_GET['act'] == "rt")
 {
-	$arr=array('useSpace'=>"$du",'freeSpace'=>"$df",'hdPercent'=>"$hdPercent",'barhdPercent'=>"$hdPercent%",'TotalMemory'=>"$mt",'UsedMemory'=>"$mu",'FreeMemory'=>"$mf",'CachedMemory'=>"$mc",'Buffers'=>"$mb",'TotalSwap'=>"$st",'swapUsed'=>"$su",'swapFree'=>"$sf",'loadAvg'=>"$load",'uptime'=>"$uptime",'freetime'=>"$freetime",'bjtime'=>"$bjtime",'stime'=>"$stime",'memRealPercent'=>"$memRealPercent",'memRealUsed'=>"$memRealUsed",'memRealFree'=>"$memRealFree",'memPercent'=>"$memPercent%",'memCachedPercent'=>"$memCachedPercent",'barmemCachedPercent'=>"$memCachedPercent%",'swapPercent'=>"$swapPercent",'barmemRealPercent'=>"$memRealPercent%",'barswapPercent'=>"$swapPercent%",'NetOut2'=>"$NetOut[2]",'NetOut3'=>"$NetOut[3]",'NetOut4'=>"$NetOut[4]",'NetOut5'=>"$NetOut[5]",'NetOut6'=>"$NetOut[6]",'NetOut7'=>"$NetOut[7]",'NetOut8'=>"$NetOut[8]",'NetOut9'=>"$NetOut[9]",'NetOut10'=>"$NetOut[10]",'NetInput2'=>"$NetInput[2]",'NetInput3'=>"$NetInput[3]",'NetInput4'=>"$NetInput[4]",'NetInput5'=>"$NetInput[5]",'NetInput6'=>"$NetInput[6]",'NetInput7'=>"$NetInput[7]",'NetInput8'=>"$NetInput[8]",'NetInput9'=>"$NetInput[9]",'NetInput10'=>"$NetInput[10]");
+	$arr=array('useSpace'=>"$du",'freeSpace'=>"$df",'hdPercent'=>"$hdPercent",'barhdPercent'=>"$hdPercent%",'TotalMemory'=>"$mt",'UsedMemory'=>"$mu",'FreeMemory'=>"$mf",'CachedMemory'=>"$mc",'Buffers'=>"$mb",'TotalSwap'=>"$st",'swapUsed'=>"$su",'swapFree'=>"$sf",'loadAvg'=>"$load",'uptime'=>"$uptime",'freetime'=>"$freetime",'bjtime'=>"$bjtime",'stime'=>"$stime",'memRealPercent'=>"$memRealPercent",'memRealUsed'=>"$memRealUsed",'memRealFree'=>"$memRealFree",'memPercent'=>"$memPercent%",'memCachedPercent'=>"$memCachedPercent",'barmemCachedPercent'=>"$memCachedPercent%",'swapPercent'=>"$swapPercent",'barmemRealPercent'=>"$memRealPercent%",'barswapPercent'=>"$swapPercent%",'NetOut2'=>"$NetOut[2]",'NetOut3'=>"$NetOut[3]",'NetOut4'=>"$NetOut[4]",'NetOut5'=>"$NetOut[5]",'NetOut6'=>"$NetOut[6]",'NetOut7'=>"$NetOut[7]",'NetOut8'=>"$NetOut[8]",'NetOut9'=>"$NetOut[9]",'NetOut10'=>"$NetOut[10]",'NetInput2'=>"$NetInput[2]",'NetInput3'=>"$NetInput[3]",'NetInput4'=>"$NetInput[4]",'NetInput5'=>"$NetInput[5]",'NetInput6'=>"$NetInput[6]",'NetInput7'=>"$NetInput[7]",'NetInput8'=>"$NetInput[8]",'NetInput9'=>"$NetInput[9]",'NetInput10'=>"$NetInput[10]",'NetOutSpeed2'=>"$NetOutSpeed[2]",'NetOutSpeed3'=>"$NetOutSpeed[3]",'NetOutSpeed4'=>"$NetOutSpeed[4]",'NetOutSpeed5'=>"$NetOutSpeed[5]",'NetInputSpeed2'=>"$NetInputSpeed[2]",'NetInputSpeed3'=>"$NetInputSpeed[3]",'NetInputSpeed4'=>"$NetInputSpeed[4]",'NetInputSpeed5'=>"$NetInputSpeed[5]");
 	$jarr=json_encode($arr); 
+	$_GET['callback'] = htmlspecialchars($_GET['callback']);
 	echo $_GET['callback'],'(',$jarr,')';
 	exit;
 }
@@ -688,14 +683,37 @@ input.btn{font-weight: bold; height: 20px; line-height: 20px; padding: 0 6px; co
 .word{word-break:break-all;}
 -->
 </style>
-<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7/jquery.min.js"></script>
 <script type="text/javascript"> 
 <!--
 $(document).ready(function(){getJSONData();});
+var OutSpeed2=<?php echo floor($NetOutSpeed[2]) ?>;
+var OutSpeed3=<?php echo floor($NetOutSpeed[3]) ?>;
+var OutSpeed4=<?php echo floor($NetOutSpeed[4]) ?>;
+var OutSpeed5=<?php echo floor($NetOutSpeed[5]) ?>;
+var InputSpeed2=<?php echo floor($NetInputSpeed[2]) ?>;
+var InputSpeed3=<?php echo floor($NetInputSpeed[3]) ?>;
+var InputSpeed4=<?php echo floor($NetInputSpeed[4]) ?>;
+var InputSpeed5=<?php echo floor($NetInputSpeed[5]) ?>;
 function getJSONData()
 {
 	setTimeout("getJSONData()", 1000);
 	$.getJSON('?act=rt&callback=?', displayData);
+}
+function ForDight(Dight,How)
+{ 
+  if (Dight<0){
+  	var Last=0+"B/s";
+  }else if (Dight<1024){
+  	var Last=Math.round(Dight*Math.pow(10,How))/Math.pow(10,How)+"B/s";
+  }else if (Dight<1048576){
+  	Dight=Dight/1024;
+  	var Last=Math.round(Dight*Math.pow(10,How))/Math.pow(10,How)+"K/s";
+  }else{
+  	Dight=Dight/1048576;
+  	var Last=Math.round(Dight*Math.pow(10,How))/Math.pow(10,How)+"M/s";
+  }
+	return Last; 
 }
 function displayData(dataJSON)
 {
@@ -744,6 +762,14 @@ function displayData(dataJSON)
 	$("#NetInput8").html(dataJSON.NetInput8);
 	$("#NetInput9").html(dataJSON.NetInput9);
 	$("#NetInput10").html(dataJSON.NetInput10);	
+	$("#NetOutSpeed2").html(ForDight((dataJSON.NetOutSpeed2-OutSpeed2),3));	OutSpeed2=dataJSON.NetOutSpeed2;
+	$("#NetOutSpeed3").html(ForDight((dataJSON.NetOutSpeed3-OutSpeed3),3));	OutSpeed3=dataJSON.NetOutSpeed3;
+	$("#NetOutSpeed4").html(ForDight((dataJSON.NetOutSpeed4-OutSpeed4),3));	OutSpeed4=dataJSON.NetOutSpeed4;
+	$("#NetOutSpeed5").html(ForDight((dataJSON.NetOutSpeed5-OutSpeed5),3));	OutSpeed5=dataJSON.NetOutSpeed5;
+	$("#NetInputSpeed2").html(ForDight((dataJSON.NetInputSpeed2-InputSpeed2),3));	InputSpeed2=dataJSON.NetInputSpeed2;
+	$("#NetInputSpeed3").html(ForDight((dataJSON.NetInputSpeed3-InputSpeed3),3));	InputSpeed3=dataJSON.NetInputSpeed3;
+	$("#NetInputSpeed4").html(ForDight((dataJSON.NetInputSpeed4-InputSpeed4),3));	InputSpeed4=dataJSON.NetInputSpeed4;
+	$("#NetInputSpeed5").html(ForDight((dataJSON.NetInputSpeed5-InputSpeed5),3));	InputSpeed5=dataJSON.NetInputSpeed5;
 }
 -->
 </script>
@@ -751,6 +777,20 @@ function displayData(dataJSON)
 <body>
 <a name="w_top"></a>
 <div id="page">
+	
+	<table width="100%" cellpadding="10" cellspacing="0">
+		<tr>
+			<th class="w_logo">雅黑PHP探针</th>
+			<th class="w_top"><a href="#w_php">PHP参数</a></th>
+			<th class="w_top"><a href="#w_module">组件支持</a></th>
+			<th class="w_top"><a href="#w_module_other">第三方组件</a></th>
+			<th class="w_top"><a href="#w_db">数据库支持</a></th>
+			<th class="w_top"><a href="#w_performance">性能检测</a></th>
+			<th class="w_top"><a href="#w_networkspeed">网速检测</a></th>
+			<th class="w_top"><a href="#w_MySQL">MySQL检测</a></th>
+			<th class="w_top"><a href="#w_function">函数检测</a></th>
+			<th class="w_top"><a href="#w_mail">邮件检测</a></th>		</tr>
+	</table>
 
 <!--服务器相关参数-->
 <table width="100%" cellpadding="3" cellspacing="0">
@@ -893,14 +933,16 @@ if($sysInfo['swapTotal']>0)
 <?}?>
 
 <?php if (false !== ($strs = @file("/proc/net/dev"))) : ?>
-<table width="100%" cellpadding="3" cellspacing="0">
-    <tr><th colspan="3">网络使用状况</th></tr>
+<table width="100%" cellpadding="5" cellspacing="0">
+    <tr><th colspan="5">网络使用状况</th></tr>
 <?php for ($i = 2; $i < count($strs); $i++ ) : ?>
 <?php preg_match_all( "/([^\s]+):[\s]{0,}(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/", $strs[$i], $info );?>
      <tr>
         <td width="13%"><?php echo $info[1][0]?> : </td>
-        <td width="43%">已接收 : <font color='#CC0000'><span id="NetInput<?php echo $i?>"><?php echo $NetInput[$i]?></span></font></td>
-        <td width="43%">已发送 : <font color='#CC0000'><span id="NetOut<?php echo $i?>"><?php echo $NetOut[$i]?></span></font></td>
+        <td width="29%">入网: <font color='#CC0000'><span id="NetInput<?php echo $i?>"><?php echo $NetInput[$i]?></span></font></td>
+		<td width="14%">实时: <font color='#CC0000'><span id="NetInputSpeed<?php echo $i?>">0B/s</span></font></td>
+        <td width="29%">出网: <font color='#CC0000'><span id="NetOut<?php echo $i?>"><?php echo $NetOut[$i]?></span></font></td>
+		<td width="14%">实时: <font color='#CC0000'><span id="NetOutSpeed<?php echo $i?>">0B/s</span></font></td>
     </tr>
 <?php endfor; ?>
 </table>
@@ -1152,7 +1194,7 @@ $PHP_VERSION = PHP_VERSION;
 $PHP_VERSION = substr($PHP_VERSION,2,1);
 if($PHP_VERSION > 2)
 {
-	echo "ZendGuardLoader";
+	echo "ZendGuardLoader[启用]";
 }
 else
 {
