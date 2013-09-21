@@ -51,8 +51,8 @@ echo ""
 
 ######################### PHP5 #########################
 
-LATEST_PHP=$(curl -s http://www.php.net/downloads.php | awk '/Current stable/{print $3}')
-INSTALLED_PHP=$(php -r 'echo PHP_VERSION;' 2>/dev/null);
+LATEST_PHP=$(curl -s http://www.php.net/downloads.php | awk '/Current Stable/{print $3}')
+INSTALLED_PHP=$(php -r 'echo PHP_VERSION;' 2>/dev/null)
 
 echo -e "Latest version of PHP: \033[41;37m $LATEST_PHP \033[0m"
 echo -e "Installed version of PHP: \033[41;37m $INSTALLED_PHP \033[0m"
@@ -167,7 +167,7 @@ Extract(){
 
 echo "===================== PHP5 Upgrade ===================="
 
-if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
+if [[ "$UPGRADE_PHP" = "y" && "$INSTALLED_PHP" > 5 ]];then
 
 	if [[ -d "/usr/local/php.bak" && -d "/usr/local/php" ]];then
 		rm -rf /usr/local/php.bak/
@@ -176,13 +176,13 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 
 	cd $LANMP_PATH
 
-	if [ ! -s php-5.4.*.tar.gz ]; then
-		LATEST_PHP_LINK="http://us.php.net/distributions/php-${LATEST_PHP}.tar.gz"
-		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp/php-latest.tar.gz"
+	if [ ! -s php-5.5.*.tar.gz ]; then
+		LATEST_PHP_LINK="http://php.net/distributions/php-${$LATEST_PHP}.tar.gz"
+		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp-src/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
 	else
-		tar -zxf php-5.4.*.tar.gz
-		cd php-5.4.*/
+		tar -zxf php-5.5.*.tar.gz
+		cd php-5.5.*/
 	fi
 
 	if [ "$SOFTWARE" != "1" ]; then
@@ -225,7 +225,6 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 		./configure \
 		--prefix=/usr/local/php \
 		--with-curl \
-		--with-curlwrappers \
 		--with-freetype-dir \
 		--with-gettext \
 		--with-gd \
@@ -264,9 +263,12 @@ if [[ "$UPGRADE_PHP" = "y" || "$UPGRADE_PHP" = "Y" ]];then
 	make install
 
 	echo "---------- PHP Extension ----------"
-	
-	mkdir -p /usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/
-	cp /usr/local/php.bak/lib/php/extensions/no-debug-non-zts-20100525/* /usr/local/php/lib/php/extensions/no-debug-non-zts-20100525/
+
+	PHP_EXT1=`ls /usr/local/php.bak/lib/php/extensions/`
+	PHP_EXT2=`ls /usr/local/php/lib/php/extensions/`
+
+	mkdir -p /usr/local/php/lib/php/extensions/${PHP_EXT2}
+	cp /usr/local/php.bak/lib/php/extensions/${PHP_EXT1}/* /usr/local/php/lib/php/extensions/${PHP_EXT2}
 
 	echo "---------- PHP Config ----------"
 
@@ -292,7 +294,7 @@ if [[ "$UPGRADE_NGINX" = "y" || "$UPGRADE_NGINX" = "Y" ]];then
 	
 	if [ ! -s nginx-${LATEST_NGINX}.tar.gz ]; then
 		LATEST_NGINX_LINK="http://nginx.org/download/nginx-$LATEST_NGINX.tar.gz"
-		BACKUP_NGINX_LINK="http://wangyan.org/download/lanmp/nginx-latest.tar.gz"
+		BACKUP_NGINX_LINK="http://wangyan.org/download/lanmp-src/nginx-latest.tar.gz"
 		Extract ${LATEST_NGINX_LINK} ${BACKUP_NGINX_LINK}
 	else
 		tar -zxf nginx-${LATEST_NGINX}.tar.gz

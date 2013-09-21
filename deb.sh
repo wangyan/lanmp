@@ -610,7 +610,7 @@ if [ "$PHP_VER" = "1" ]; then
 	cd php-5.2.17/
 else
 	if [ ! -s php-5.5.*.tar.gz ]; then
-		LATEST_PHP_VERSION=`curl -s http://php.net/downloads.php | awk '/Current stable/{print $3}'`
+		LATEST_PHP_VERSION=`curl -s http://php.net/downloads.php | awk '/Current Stable/{print $3}'`
 		LATEST_PHP_LINK="http://php.net/distributions/php-${LATEST_PHP_VERSION}.tar.gz"
 		BACKUP_PHP_LINK="http://wangyan.org/download/lanmp-src/php-latest.tar.gz"
 		Extract ${LATEST_PHP_LINK} ${BACKUP_PHP_LINK}
@@ -668,7 +668,6 @@ elif [[ "$SOFTWARE" = "1" && "$PHP_VER" = "2" ]]; then
 	./configure \
 	--prefix=/usr/local/php \
 	--with-curl \
-	--with-curlwrappers \
 	--with-freetype-dir \
 	--with-gettext \
 	--with-gd \
@@ -1108,6 +1107,7 @@ fi
 echo "================phpMyAdmin Install==============="
 
 cd $LANMP_PATH/
+/etc/init.d/mysql restart
 
 if [ ! -s phpMyAdmin-*-all-languages.tar.gz ]; then
 	PMA_VERSION=`elinks http://nchc.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/ | awk -F/ '{print $7F}' | sort -n | grep -iv '-' | tail -1`
